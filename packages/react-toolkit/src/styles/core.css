@@ -1,0 +1,333 @@
+/*
+ * DawgStack core: design tokens, themes, shared keyframes and utilities.
+ * Import this once before any component styles (styles.css already includes it).
+ *
+ * Everything lives in cascade layers, so any unlayered CSS you write wins without
+ * specificity fights. Override a token anywhere:  :root { --dawg-color-primary-solid: #0d9488; }
+ *
+ * Themes: light by default. Set data-dawg-theme="dark" or "system" (follows the OS) on <html>
+ * or on any element to theme just that subtree.
+ */
+@layer dawg.tokens, dawg.components, dawg.utilities;
+
+@layer dawg.tokens {
+  :root {
+    /* ---------- Typography ---------- */
+    /* Components inherit your app's font unless --dawg-font-family is set. */
+    --dawg-font-family-mono:
+      ui-monospace, 'SF Mono', 'Cascadia Code', 'Segoe UI Mono', Menlo, Consolas, monospace;
+    --dawg-font-size-xs: 0.75rem;
+    --dawg-font-size-sm: 0.875rem;
+    --dawg-font-size-md: 1rem;
+    --dawg-font-size-lg: 1.125rem;
+    --dawg-font-size-xl: 1.25rem;
+    --dawg-font-weight-regular: 400;
+    --dawg-font-weight-medium: 500;
+    --dawg-font-weight-semibold: 600;
+    --dawg-font-weight-bold: 700;
+    --dawg-line-height-tight: 1.25;
+    --dawg-line-height-normal: 1.5;
+
+    /* ---------- Spacing (rem, so it scales with the user's font size) ---------- */
+    --dawg-space-1: 0.25rem;
+    --dawg-space-2: 0.5rem;
+    --dawg-space-3: 0.75rem;
+    --dawg-space-4: 1rem;
+    --dawg-space-5: 1.25rem;
+    --dawg-space-6: 1.5rem;
+    --dawg-space-8: 2rem;
+    --dawg-space-10: 2.5rem;
+    --dawg-space-12: 3rem;
+
+    /* ---------- Shape ---------- */
+    --dawg-radius-xs: 0.25rem;
+    --dawg-radius-sm: 0.375rem;
+    --dawg-radius-md: 0.5rem;
+    --dawg-radius-lg: 0.75rem;
+    --dawg-radius-xl: 1rem;
+    --dawg-radius-full: 9999px;
+
+    /* ---------- Sizing ---------- */
+    --dawg-control-height-sm: 2rem;
+    --dawg-control-height-md: 2.5rem;
+    --dawg-control-height-lg: 3rem;
+    /* Minimum control height on touch screens (pointer: coarse). */
+    --dawg-touch-target: 2.75rem;
+
+    /* ---------- Focus ---------- */
+    --dawg-focus-ring-width: 2px;
+    --dawg-focus-ring-offset: 2px;
+
+    /* ---------- Motion ---------- */
+    --dawg-duration-fast: 120ms;
+    --dawg-duration-normal: 200ms;
+    --dawg-duration-slow: 400ms;
+    --dawg-easing-standard: cubic-bezier(0.2, 0, 0, 1);
+    --dawg-easing-emphasized: cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  /* ---------- Light theme (default) ---------- */
+  :root,
+  [data-dawg-theme='light'],
+  [data-dawg-theme='system'] {
+    color-scheme: light;
+    --dawg-color-bg: #fafafa;
+    --dawg-color-surface: #ffffff;
+    --dawg-color-surface-muted: #f4f4f5;
+    --dawg-color-surface-strong: #e4e4e7;
+    --dawg-color-border: #e4e4e7;
+    --dawg-color-border-strong: #d4d4d8;
+
+    --dawg-color-text: #18181b;
+    --dawg-color-text-muted: #52525b;
+    --dawg-color-text-subtle: #71717a;
+
+    --dawg-color-focus-ring: #4f46e5;
+    --dawg-color-track: #e4e4e7;
+    --dawg-color-skeleton: #e4e4e7;
+    --dawg-color-skeleton-highlight: #f4f4f5;
+
+    /* Each tone: base (text and graphics on surfaces), soft background, border,
+       solid background, hover state of solid, and the text colour on solid. */
+    --dawg-color-primary: #4338ca;
+    --dawg-color-primary-soft: #eef2ff;
+    --dawg-color-primary-border: #c7d2fe;
+    --dawg-color-primary-solid: #4f46e5;
+    --dawg-color-primary-solid-hover: #4338ca;
+    --dawg-color-primary-on-solid: #ffffff;
+
+    --dawg-color-neutral: #3f3f46;
+    --dawg-color-neutral-soft: #f4f4f5;
+    --dawg-color-neutral-border: #e4e4e7;
+    --dawg-color-neutral-solid: #52525b;
+    --dawg-color-neutral-solid-hover: #3f3f46;
+    --dawg-color-neutral-on-solid: #ffffff;
+
+    --dawg-color-info: #1d4ed8;
+    --dawg-color-info-soft: #dbeafe;
+    --dawg-color-info-border: #bfdbfe;
+    --dawg-color-info-solid: #2563eb;
+    --dawg-color-info-solid-hover: #1d4ed8;
+    --dawg-color-info-on-solid: #ffffff;
+
+    --dawg-color-success: #166534;
+    --dawg-color-success-soft: #dcfce7;
+    --dawg-color-success-border: #bbf7d0;
+    --dawg-color-success-solid: #15803d;
+    --dawg-color-success-solid-hover: #166534;
+    --dawg-color-success-on-solid: #ffffff;
+
+    --dawg-color-warning: #92400e;
+    --dawg-color-warning-soft: #fef3c7;
+    --dawg-color-warning-border: #fde68a;
+    --dawg-color-warning-solid: #b45309;
+    --dawg-color-warning-solid-hover: #92400e;
+    --dawg-color-warning-on-solid: #ffffff;
+
+    --dawg-color-danger: #b91c1c;
+    --dawg-color-danger-soft: #fee2e2;
+    --dawg-color-danger-border: #fecaca;
+    --dawg-color-danger-solid: #dc2626;
+    --dawg-color-danger-solid-hover: #b91c1c;
+    --dawg-color-danger-on-solid: #ffffff;
+
+    --dawg-shadow-sm: 0 1px 2px rgb(24 24 27 / 0.06);
+    --dawg-shadow-md: 0 4px 12px -2px rgb(24 24 27 / 0.1), 0 2px 4px -2px rgb(24 24 27 / 0.06);
+    --dawg-shadow-lg: 0 16px 32px -8px rgb(24 24 27 / 0.18), 0 4px 8px -4px rgb(24 24 27 / 0.08);
+  }
+
+  /* ---------- Dark theme ----------
+     The same values appear twice: once for data-dawg-theme="dark" and once for "system"
+     when the OS prefers dark. A unit test keeps the two blocks identical. */
+  [data-dawg-theme='dark'] {
+    color-scheme: dark;
+    --dawg-color-bg: #09090b;
+    --dawg-color-surface: #18181b;
+    --dawg-color-surface-muted: #27272a;
+    --dawg-color-surface-strong: #3f3f46;
+    --dawg-color-border: #303036;
+    --dawg-color-border-strong: #52525b;
+
+    --dawg-color-text: #fafafa;
+    --dawg-color-text-muted: #a1a1aa;
+    --dawg-color-text-subtle: #8f8f99;
+
+    --dawg-color-focus-ring: #a5b4fc;
+    --dawg-color-track: #27272a;
+    --dawg-color-skeleton: #27272a;
+    --dawg-color-skeleton-highlight: #3a3a40;
+
+    --dawg-color-primary: #a5b4fc;
+    --dawg-color-primary-soft: rgb(99 102 241 / 0.18);
+    --dawg-color-primary-border: rgb(129 140 248 / 0.35);
+    --dawg-color-primary-solid: #4f46e5;
+    --dawg-color-primary-solid-hover: #4338ca;
+    --dawg-color-primary-on-solid: #ffffff;
+
+    --dawg-color-neutral: #d4d4d8;
+    --dawg-color-neutral-soft: rgb(161 161 170 / 0.14);
+    --dawg-color-neutral-border: rgb(161 161 170 / 0.28);
+    --dawg-color-neutral-solid: #52525b;
+    --dawg-color-neutral-solid-hover: #3f3f46;
+    --dawg-color-neutral-on-solid: #ffffff;
+
+    --dawg-color-info: #93c5fd;
+    --dawg-color-info-soft: rgb(59 130 246 / 0.16);
+    --dawg-color-info-border: rgb(59 130 246 / 0.34);
+    --dawg-color-info-solid: #2563eb;
+    --dawg-color-info-solid-hover: #1d4ed8;
+    --dawg-color-info-on-solid: #ffffff;
+
+    --dawg-color-success: #86efac;
+    --dawg-color-success-soft: rgb(34 197 94 / 0.15);
+    --dawg-color-success-border: rgb(34 197 94 / 0.32);
+    --dawg-color-success-solid: #15803d;
+    --dawg-color-success-solid-hover: #166534;
+    --dawg-color-success-on-solid: #ffffff;
+
+    --dawg-color-warning: #fcd34d;
+    --dawg-color-warning-soft: rgb(245 158 11 / 0.15);
+    --dawg-color-warning-border: rgb(245 158 11 / 0.32);
+    --dawg-color-warning-solid: #b45309;
+    --dawg-color-warning-solid-hover: #92400e;
+    --dawg-color-warning-on-solid: #ffffff;
+
+    --dawg-color-danger: #fca5a5;
+    --dawg-color-danger-soft: rgb(239 68 68 / 0.15);
+    --dawg-color-danger-border: rgb(239 68 68 / 0.34);
+    --dawg-color-danger-solid: #dc2626;
+    --dawg-color-danger-solid-hover: #b91c1c;
+    --dawg-color-danger-on-solid: #ffffff;
+
+    --dawg-shadow-sm: 0 1px 2px rgb(0 0 0 / 0.4);
+    --dawg-shadow-md: 0 6px 16px -4px rgb(0 0 0 / 0.55), 0 2px 4px -2px rgb(0 0 0 / 0.4);
+    --dawg-shadow-lg: 0 20px 40px -10px rgb(0 0 0 / 0.7), 0 4px 10px -4px rgb(0 0 0 / 0.45);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    [data-dawg-theme='system'] {
+      color-scheme: dark;
+      --dawg-color-bg: #09090b;
+      --dawg-color-surface: #18181b;
+      --dawg-color-surface-muted: #27272a;
+      --dawg-color-surface-strong: #3f3f46;
+      --dawg-color-border: #303036;
+      --dawg-color-border-strong: #52525b;
+
+      --dawg-color-text: #fafafa;
+      --dawg-color-text-muted: #a1a1aa;
+      --dawg-color-text-subtle: #8f8f99;
+
+      --dawg-color-focus-ring: #a5b4fc;
+      --dawg-color-track: #27272a;
+      --dawg-color-skeleton: #27272a;
+      --dawg-color-skeleton-highlight: #3a3a40;
+
+      --dawg-color-primary: #a5b4fc;
+      --dawg-color-primary-soft: rgb(99 102 241 / 0.18);
+      --dawg-color-primary-border: rgb(129 140 248 / 0.35);
+      --dawg-color-primary-solid: #4f46e5;
+      --dawg-color-primary-solid-hover: #4338ca;
+      --dawg-color-primary-on-solid: #ffffff;
+
+      --dawg-color-neutral: #d4d4d8;
+      --dawg-color-neutral-soft: rgb(161 161 170 / 0.14);
+      --dawg-color-neutral-border: rgb(161 161 170 / 0.28);
+      --dawg-color-neutral-solid: #52525b;
+      --dawg-color-neutral-solid-hover: #3f3f46;
+      --dawg-color-neutral-on-solid: #ffffff;
+
+      --dawg-color-info: #93c5fd;
+      --dawg-color-info-soft: rgb(59 130 246 / 0.16);
+      --dawg-color-info-border: rgb(59 130 246 / 0.34);
+      --dawg-color-info-solid: #2563eb;
+      --dawg-color-info-solid-hover: #1d4ed8;
+      --dawg-color-info-on-solid: #ffffff;
+
+      --dawg-color-success: #86efac;
+      --dawg-color-success-soft: rgb(34 197 94 / 0.15);
+      --dawg-color-success-border: rgb(34 197 94 / 0.32);
+      --dawg-color-success-solid: #15803d;
+      --dawg-color-success-solid-hover: #166534;
+      --dawg-color-success-on-solid: #ffffff;
+
+      --dawg-color-warning: #fcd34d;
+      --dawg-color-warning-soft: rgb(245 158 11 / 0.15);
+      --dawg-color-warning-border: rgb(245 158 11 / 0.32);
+      --dawg-color-warning-solid: #b45309;
+      --dawg-color-warning-solid-hover: #92400e;
+      --dawg-color-warning-on-solid: #ffffff;
+
+      --dawg-color-danger: #fca5a5;
+      --dawg-color-danger-soft: rgb(239 68 68 / 0.15);
+      --dawg-color-danger-border: rgb(239 68 68 / 0.34);
+      --dawg-color-danger-solid: #dc2626;
+      --dawg-color-danger-solid-hover: #b91c1c;
+      --dawg-color-danger-on-solid: #ffffff;
+
+      --dawg-shadow-sm: 0 1px 2px rgb(0 0 0 / 0.4);
+      --dawg-shadow-md: 0 6px 16px -4px rgb(0 0 0 / 0.55), 0 2px 4px -2px rgb(0 0 0 / 0.4);
+      --dawg-shadow-lg: 0 20px 40px -10px rgb(0 0 0 / 0.7), 0 4px 10px -4px rgb(0 0 0 / 0.45);
+    }
+  }
+}
+
+/* ---------- Shared keyframes ---------- */
+@keyframes dawg-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@keyframes dawg-ping {
+  0% {
+    transform: scale(1);
+    opacity: 0.6;
+  }
+  80%,
+  100% {
+    transform: scale(2.4);
+    opacity: 0;
+  }
+}
+@keyframes dawg-shimmer {
+  from {
+    background-position: 150% 0;
+  }
+  to {
+    background-position: -50% 0;
+  }
+}
+@keyframes dawg-slide {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(250%);
+  }
+}
+@keyframes dawg-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* ---------- Utilities ---------- */
+@layer dawg.utilities {
+  /* Hidden visually, still read by screen readers. */
+  .dawg-visually-hidden {
+    position: absolute !important;
+    width: 1px !important;
+    height: 1px !important;
+    padding: 0 !important;
+    margin: -1px !important;
+    overflow: hidden !important;
+    clip: rect(0 0 0 0) !important;
+    white-space: nowrap !important;
+    border: 0 !important;
+  }
+}
