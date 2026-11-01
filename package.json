@@ -1,0 +1,33 @@
+{
+  "name": "dawgstack",
+  "private": true,
+  "description": "DawgStack monorepo: reusable React components, design tokens and developer utilities.",
+  "type": "module",
+  "packageManager": "pnpm@10.28.0",
+  "engines": {
+    "node": ">=22.18"
+  },
+  "scripts": {
+    "build": "pnpm --filter @dawg-codes/react-toolkit build",
+    "test": "pnpm --filter @dawg-codes/react-toolkit test",
+    "typecheck": "pnpm -r typecheck",
+    "lint": "eslint .",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "leak-guard": "node tooling/leak-guard.mjs",
+    "check:package": "pnpm --filter @dawg-codes/react-toolkit check:package",
+    "check": "pnpm leak-guard && pnpm lint && pnpm format:check && pnpm typecheck && pnpm test && pnpm build && pnpm check:package",
+    "playground": "pnpm build && pnpm --filter playground dev",
+    "playground:build": "pnpm build && pnpm --filter playground build"
+  },
+  "devDependencies": {
+    "@eslint/js": "9.39.5",
+    "eslint": "9.39.5",
+    "eslint-plugin-jsx-a11y": "6.10.2",
+    "eslint-plugin-react-hooks": "7.1.1",
+    "globals": "17.14.0",
+    "prettier": "3.9.10",
+    "typescript": "5.9.3",
+    "typescript-eslint": "8.72.1"
+  }
+}

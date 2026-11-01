@@ -1,0 +1,19 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+*.tsbuildinfo
+
+# Test and tool output
+coverage/
+screenshots/
+*.tgz
+
+# Logs and OS files
+*.log
+.DS_Store
+
+# Local environment files (never commit secrets)
+.env
+.env.*
