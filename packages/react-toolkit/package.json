@@ -32,6 +32,12 @@
       "button": [
         "./dist/button.d.cts"
       ],
+      "card": [
+        "./dist/card.d.cts"
+      ],
+      "divider": [
+        "./dist/divider.d.cts"
+      ],
       "spinner": [
         "./dist/spinner.d.cts"
       ],
@@ -59,6 +65,26 @@
       "require": {
         "types": "./dist/button.d.cts",
         "default": "./dist/button.cjs"
+      }
+    },
+    "./card": {
+      "import": {
+        "types": "./dist/card.d.ts",
+        "default": "./dist/card.js"
+      },
+      "require": {
+        "types": "./dist/card.d.cts",
+        "default": "./dist/card.cjs"
+      }
+    },
+    "./divider": {
+      "import": {
+        "types": "./dist/divider.d.ts",
+        "default": "./dist/divider.js"
+      },
+      "require": {
+        "types": "./dist/divider.d.cts",
+        "default": "./dist/divider.cjs"
       }
     },
     "./spinner": {
