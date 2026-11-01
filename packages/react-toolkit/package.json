@@ -29,6 +29,12 @@
   "types": "./dist/index.d.cts",
   "typesVersions": {
     "*": {
+      "avatar": [
+        "./dist/avatar.d.cts"
+      ],
+      "badge": [
+        "./dist/badge.d.cts"
+      ],
       "button": [
         "./dist/button.d.cts"
       ],
@@ -55,6 +61,26 @@
       "require": {
         "types": "./dist/index.d.cts",
         "default": "./dist/index.cjs"
+      }
+    },
+    "./avatar": {
+      "import": {
+        "types": "./dist/avatar.d.ts",
+        "default": "./dist/avatar.js"
+      },
+      "require": {
+        "types": "./dist/avatar.d.cts",
+        "default": "./dist/avatar.cjs"
+      }
+    },
+    "./badge": {
+      "import": {
+        "types": "./dist/badge.d.ts",
+        "default": "./dist/badge.js"
+      },
+      "require": {
+        "types": "./dist/badge.d.cts",
+        "default": "./dist/badge.cjs"
       }
     },
     "./button": {

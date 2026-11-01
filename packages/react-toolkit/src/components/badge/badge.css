@@ -1,0 +1,117 @@
+@layer dawg.components {
+  .dawg-badge {
+    --_fg: var(--dawg-color-neutral);
+    --_soft: var(--dawg-color-neutral-soft);
+    --_border: var(--dawg-color-neutral-border);
+    --_solid: var(--dawg-color-neutral-solid);
+    --_on-solid: var(--dawg-color-neutral-on-solid);
+
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375em;
+    box-sizing: border-box;
+    max-width: 100%;
+    padding: 0.125rem 0.625rem;
+    border: 1px solid var(--_border);
+    border-radius: var(--dawg-badge-radius, var(--dawg-radius-full));
+    background: var(--_soft);
+    color: var(--_fg);
+    font-family: var(--dawg-font-family, inherit);
+    font-size: var(--dawg-font-size-xs);
+    font-weight: var(--dawg-font-weight-semibold);
+    line-height: var(--dawg-line-height-normal);
+    white-space: nowrap;
+    vertical-align: middle;
+  }
+  .dawg-badge[data-size='sm'] {
+    gap: 0.25em;
+    padding: 0 0.375rem;
+    line-height: var(--dawg-line-height-tight);
+  }
+
+  /* ---------- Tones ---------- */
+  .dawg-badge[data-tone='primary'] {
+    --_fg: var(--dawg-color-primary);
+    --_soft: var(--dawg-color-primary-soft);
+    --_border: var(--dawg-color-primary-border);
+    --_solid: var(--dawg-color-primary-solid);
+    --_on-solid: var(--dawg-color-primary-on-solid);
+  }
+  .dawg-badge[data-tone='info'] {
+    --_fg: var(--dawg-color-info);
+    --_soft: var(--dawg-color-info-soft);
+    --_border: var(--dawg-color-info-border);
+    --_solid: var(--dawg-color-info-solid);
+    --_on-solid: var(--dawg-color-info-on-solid);
+  }
+  .dawg-badge[data-tone='success'] {
+    --_fg: var(--dawg-color-success);
+    --_soft: var(--dawg-color-success-soft);
+    --_border: var(--dawg-color-success-border);
+    --_solid: var(--dawg-color-success-solid);
+    --_on-solid: var(--dawg-color-success-on-solid);
+  }
+  .dawg-badge[data-tone='warning'] {
+    --_fg: var(--dawg-color-warning);
+    --_soft: var(--dawg-color-warning-soft);
+    --_border: var(--dawg-color-warning-border);
+    --_solid: var(--dawg-color-warning-solid);
+    --_on-solid: var(--dawg-color-warning-on-solid);
+  }
+  .dawg-badge[data-tone='danger'] {
+    --_fg: var(--dawg-color-danger);
+    --_soft: var(--dawg-color-danger-soft);
+    --_border: var(--dawg-color-danger-border);
+    --_solid: var(--dawg-color-danger-solid);
+    --_on-solid: var(--dawg-color-danger-on-solid);
+  }
+
+  /* ---------- Variants ---------- */
+  .dawg-badge[data-variant='solid'] {
+    border-color: transparent;
+    background: var(--_solid);
+    color: var(--_on-solid);
+  }
+  .dawg-badge[data-variant='outline'] {
+    border-color: color-mix(in srgb, var(--_fg) 50%, transparent);
+    background: transparent;
+  }
+
+  /* ---------- Parts ---------- */
+  .dawg-badge__label {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .dawg-badge__icon {
+    display: inline-flex;
+    flex: none;
+  }
+  .dawg-badge__icon svg {
+    width: 1.1em;
+    height: 1.1em;
+  }
+  .dawg-badge__dot {
+    position: relative;
+    flex: none;
+    width: 0.5em;
+    height: 0.5em;
+    border-radius: 50%;
+    background: currentColor;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .dawg-badge__dot[data-pulse]::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      background: currentColor;
+      animation: dawg-ping 1.8s var(--dawg-easing-emphasized) infinite;
+    }
+  }
+  @media (forced-colors: active) {
+    .dawg-badge__dot {
+      background: CanvasText;
+    }
+  }
+}
