@@ -3,5 +3,8 @@ export * from './components/badge';
 export * from './components/button';
 export * from './components/card';
 export * from './components/divider';
+export * from './components/empty-state';
+export * from './components/progress-bar';
+export * from './components/skeleton';
 export * from './components/spinner';
 export * from './components/visually-hidden';

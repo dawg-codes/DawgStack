@@ -44,6 +44,15 @@
       "divider": [
         "./dist/divider.d.cts"
       ],
+      "empty-state": [
+        "./dist/empty-state.d.cts"
+      ],
+      "progress-bar": [
+        "./dist/progress-bar.d.cts"
+      ],
+      "skeleton": [
+        "./dist/skeleton.d.cts"
+      ],
       "spinner": [
         "./dist/spinner.d.cts"
       ],
@@ -111,6 +120,36 @@
       "require": {
         "types": "./dist/divider.d.cts",
         "default": "./dist/divider.cjs"
+      }
+    },
+    "./empty-state": {
+      "import": {
+        "types": "./dist/empty-state.d.ts",
+        "default": "./dist/empty-state.js"
+      },
+      "require": {
+        "types": "./dist/empty-state.d.cts",
+        "default": "./dist/empty-state.cjs"
+      }
+    },
+    "./progress-bar": {
+      "import": {
+        "types": "./dist/progress-bar.d.ts",
+        "default": "./dist/progress-bar.js"
+      },
+      "require": {
+        "types": "./dist/progress-bar.d.cts",
+        "default": "./dist/progress-bar.cjs"
+      }
+    },
+    "./skeleton": {
+      "import": {
+        "types": "./dist/skeleton.d.ts",
+        "default": "./dist/skeleton.js"
+      },
+      "require": {
+        "types": "./dist/skeleton.d.cts",
+        "default": "./dist/skeleton.cjs"
       }
     },
     "./spinner": {
