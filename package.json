@@ -10,13 +10,13 @@
   "scripts": {
     "build": "pnpm --filter @dawg-codes/react-toolkit build",
     "test": "pnpm --filter @dawg-codes/react-toolkit test",
-    "typecheck": "pnpm -r typecheck",
+    "typecheck": "pnpm --filter @dawg-codes/react-toolkit typecheck",
     "lint": "eslint .",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "leak-guard": "node tooling/leak-guard.mjs",
     "check:package": "pnpm --filter @dawg-codes/react-toolkit check:package",
-    "check": "pnpm leak-guard && pnpm lint && pnpm format:check && pnpm typecheck && pnpm test && pnpm build && pnpm check:package",
+    "check": "pnpm leak-guard && pnpm lint && pnpm format:check && pnpm typecheck && pnpm test && pnpm build && pnpm check:package && pnpm --filter playground build",
     "playground": "pnpm build && pnpm --filter playground dev",
     "playground:build": "pnpm build && pnpm --filter playground build"
   },
