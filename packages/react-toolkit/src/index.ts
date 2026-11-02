@@ -7,4 +7,5 @@ export * from './components/empty-state';
 export * from './components/progress-bar';
 export * from './components/skeleton';
 export * from './components/spinner';
+export * from './components/theme';
 export * from './components/visually-hidden';

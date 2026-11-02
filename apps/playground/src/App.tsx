@@ -1,4 +1,4 @@
-import { useEffect, useState, type ReactNode } from 'react';
+import { useMemo, useState, type ReactNode } from 'react';
 import {
   Avatar,
   Badge,
@@ -25,6 +25,17 @@ import {
 // Components can also be imported one at a time from their own entry point:
 import { ProgressBar } from '@dawg-codes/react-toolkit/progress-bar';
 import {
+  ThemeProvider,
+  ThemeScope,
+  ThemeToggle,
+  accentPresets,
+  mergeThemes,
+  shapePresets,
+  useTheme,
+  type AccentPresetName,
+  type ShapePresetName,
+} from '@dawg-codes/react-toolkit/theme';
+import {
   AlertIcon,
   ArrowRightIcon,
   CheckIcon,
@@ -34,17 +45,78 @@ import {
   TrashIcon,
 } from './icons';
 
-type Theme = 'light' | 'dark' | 'system';
-const THEME_KEY = 'dawgstack-playground-theme';
+const ACCENTS: { value: AccentPresetName; label: string; swatch: string }[] = [
+  { value: 'indigo', label: 'Indigo', swatch: '#4f46e5' },
+  { value: 'teal', label: 'Teal', swatch: '#0f766e' },
+  { value: 'pink', label: 'Pink', swatch: '#be185d' },
+  { value: 'graphite', label: 'Graphite', swatch: '#27272a' },
+];
+const SHAPES: { value: ShapePresetName; label: string }[] = [
+  { value: 'sharp', label: 'Sharp' },
+  { value: 'default', label: 'Default' },
+  { value: 'round', label: 'Round' },
+];
 
-function readTheme(): Theme {
-  try {
-    const saved = localStorage.getItem(THEME_KEY);
-    if (saved === 'light' || saved === 'dark' || saved === 'system') return saved;
-  } catch {
-    /* storage unavailable */
-  }
-  return 'system';
+/** A choice remembered in localStorage (wrapped in try/catch: storage can be blocked). */
+function useStoredChoice<T extends string>(key: string, fallback: T, allowed: readonly T[]) {
+  const [value, setValue] = useState<T>(() => {
+    try {
+      const saved = localStorage.getItem(key) as T | null;
+      if (saved && allowed.includes(saved)) return saved;
+    } catch {
+      /* storage unavailable */
+    }
+    return fallback;
+  });
+  const update = (next: T) => {
+    setValue(next);
+    try {
+      localStorage.setItem(key, next);
+    } catch {
+      /* storage unavailable: the choice lasts for this visit */
+    }
+  };
+  return [value, update] as const;
+}
+
+/** A row of native radio buttons styled as chips. */
+function ChoiceGroup<T extends string>({
+  legend,
+  name,
+  value,
+  options,
+  onChange,
+}: {
+  legend: string;
+  name: string;
+  value: T;
+  options: { value: T; label: string; swatch?: string }[];
+  onChange: (value: T) => void;
+}) {
+  return (
+    <fieldset className="pg-choice">
+      <legend>{legend}</legend>
+      <div className="pg-choice-options">
+        {options.map((o) => (
+          <label key={o.value} className="pg-choice-option">
+            <input
+              type="radio"
+              name={name}
+              value={o.value}
+              checked={value === o.value}
+              onChange={() => onChange(o.value)}
+            />
+            <span className="pg-choice-box">
+              {o.swatch && (
+                <span className="pg-swatch" style={{ background: o.swatch }} aria-hidden="true" />
+              )}
+              {o.label}
+            </span>
+          </label>
+        ))}
+      </div>
+    </fieldset>
+  );
 }
 
 function Section({ id, title, children }: { id: string; title: string; children: ReactNode }) {
@@ -70,19 +142,61 @@ const DEPLOYMENT: StatusMap<Deployment> = {
 const DeploymentStatus = createStatusBadge(DEPLOYMENT, { displayName: 'DeploymentStatus' });
 
 export function App() {
-  const [theme, setTheme] = useState<Theme>(readTheme);
+  const [accent, setAccent] = useStoredChoice(
+    'dawgstack-playground-accent',
+    'indigo',
+    ACCENTS.map((a) => a.value),
+  );
+  const [shape, setShape] = useStoredChoice(
+    'dawgstack-playground-shape',
+    'default',
+    SHAPES.map((s) => s.value),
+  );
+  // Theme modules combine: one accent preset plus one shape preset.
+  const theme = useMemo(
+    () => mergeThemes(accentPresets[accent], shapePresets[shape]),
+    [accent, shape],
+  );
+  return (
+    <ThemeProvider theme={theme}>
+      <Playground
+        customise={
+          <div className="pg-customise">
+            <ChoiceGroup
+              legend="Accent"
+              name="accent"
+              value={accent}
+              options={ACCENTS}
+              onChange={setAccent}
+            />
+            <ChoiceGroup
+              legend="Corners"
+              name="shape"
+              value={shape}
+              options={SHAPES}
+              onChange={setShape}
+            />
+          </div>
+        }
+      />
+    </ThemeProvider>
+  );
+}
+
+function ModeReadout() {
+  const { mode, resolvedMode } = useTheme();
+  return (
+    <p className="pg-muted" aria-live="polite">
+      Mode: <strong>{mode}</strong>
+      {mode === 'system' && ` (showing ${resolvedMode})`}
+    </p>
+  );
+}
+
+function Playground({ customise }: { customise: ReactNode }) {
   const [saving, setSaving] = useState(false);
   const [progress, setProgress] = useState(40);
   const [contentLoading, setContentLoading] = useState(true);
-
-  useEffect(() => {
-    document.documentElement.setAttribute('data-dawg-theme', theme);
-    try {
-      localStorage.setItem(THEME_KEY, theme);
-    } catch {
-      /* storage unavailable: the choice lasts for this visit */
-    }
-  }, [theme]);
 
   const save = () => {
     setSaving(true);
@@ -95,25 +209,22 @@ export function App() {
         <div className="pg-container pg-header-inner">
           <div>
             <h1>DawgStack playground</h1>
-            <p>Phase 1 components from @dawg-codes/react-toolkit.</p>
+            <p>Components from @dawg-codes/react-toolkit.</p>
           </div>
-          <div className="pg-theme" role="group" aria-label="Colour theme">
-            {(['light', 'dark', 'system'] as const).map((t) => (
-              <Button
-                key={t}
-                size="sm"
-                variant={theme === t ? 'primary' : 'outline'}
-                aria-pressed={theme === t}
-                onClick={() => setTheme(t)}
-              >
-                {t[0]!.toUpperCase() + t.slice(1)}
-              </Button>
-            ))}
-          </div>
+          <ThemeToggle />
         </div>
       </header>
 
       <main className="pg-container pg-main">
+        <Section id="customise" title="Customise">
+          <p className="pg-muted">
+            Every style on this page comes from design tokens. Switch the mode, accent and corner
+            presets to restyle all components at once: no component code changes.
+          </p>
+          <ModeReadout />
+          {customise}
+        </Section>
+
         <Section id="buttons" title="Button">
           <div className="pg-row">
             {VARIANTS.map((v) => (
@@ -340,6 +451,26 @@ export function App() {
               />
             </Card>
           </div>
+        </Section>
+        <Section id="scope" title="ThemeScope">
+          <p className="pg-muted">
+            Theme one part of a page: this panel is always dark with the pink accent, whatever the
+            page uses.
+          </p>
+          <ThemeScope mode="dark" theme={accentPresets.pink} className="pg-scope">
+            <Card variant="elevated">
+              <CardHeader>
+                <CardTitle>Scoped theme</CardTitle>
+                <Badge tone="primary">Pink</Badge>
+              </CardHeader>
+              <CardDescription>Tokens set on this element apply only inside it.</CardDescription>
+              <ProgressBar value={64} label="Progress" showValue />
+              <CardFooter>
+                <Button variant="ghost">Cancel</Button>
+                <Button variant="primary">Continue</Button>
+              </CardFooter>
+            </Card>
+          </ThemeScope>
         </Section>
       </main>
     </>

@@ -6,13 +6,13 @@ Accessible, themeable React components and design tokens from **DawgStack**.
 
 - **React is the only peer dependency** (18.2+ or 19). There are no runtime dependencies.
 - **Plain CSS with design tokens.** There's no CSS-in-JS and no Tailwind requirement. All styles live in cascade layers, so your own CSS always wins.
-- **Light, dark and system themes**, with WCAG AA colour contrast checked by tests in both themes.
+- **Switchable, modular theming.** Light, dark and system modes with a ready-made toggle, mix-and-match accent and shape presets, typed custom themes and scoped themes. WCAG AA contrast is tested for every theme.
 - **Import everything or one component at a time.** Ships ESM and CommonJS with TypeScript types, and server-rendering safe.
 
 ## Contents
 
 - [Styles](#styles)
-- [Theming](#theming)
+- [Theming](#theming): [ThemeProvider and ThemeToggle](#themeprovider-and-themetoggle) · [Presets](#presets) · [Custom themes](#custom-themes) · [Theming part of a page](#theming-part-of-a-page) · [Plain HTML and CSS](#plain-html-and-css)
 - [Components](#components): [Button](#button) · [Card](#card) · [Badge and StatusBadge](#badge-and-statusbadge) · [Avatar](#avatar) · [Divider](#divider) · [Spinner](#spinner) · [Skeleton](#skeleton) · [ProgressBar](#progressbar) · [EmptyState](#emptystate) · [VisuallyHidden](#visuallyhidden)
 - [Browser support](#browser-support)
 - [Known limitations](#known-limitations)
@@ -31,7 +31,9 @@ import '@dawg-codes/react-toolkit/css/button.css';
 import '@dawg-codes/react-toolkit/css/card.css';
 ```
 
-Component files in `css/` are named after the component's entry point: `avatar`, `badge` (also covers StatusBadge), `button`, `card`, `divider`, `empty-state`, `progress-bar`, `skeleton` and `spinner`. VisuallyHidden's styles are in `core.css`.
+Component files in `css/` are named after the component's entry point: `avatar`, `badge` (also covers StatusBadge), `button`, `card`, `divider`, `empty-state`, `progress-bar`, `skeleton`, `spinner` and `theme` (ThemeToggle). VisuallyHidden's styles are in `core.css`.
+
+**The CSS is optional.** To use your own styles instead, skip these imports: every component renders stable `dawg-*` class names, plus `data-*` attributes for its options (for example `data-variant="primary"`), for you to style.
 
 The toolkit never styles `html` or `body`. Use the tokens for your page if you like:
 
@@ -51,9 +53,151 @@ import { ProgressBar } from '@dawg-codes/react-toolkit/progress-bar';
 
 ## Theming
 
-### Light, dark and system
+Everything visual comes from design tokens (CSS custom properties), so you can restyle every component at once without touching component code:
 
-Light is the default. Set `data-dawg-theme` on `<html>`, or on any element to theme only that part of the page:
+| You want to…                                              | Use                                                                 |
+| --------------------------------------------------------- | ------------------------------------------------------------------- |
+| Let users switch light, dark or follow the system setting | [`ThemeProvider` and `ThemeToggle`](#themeprovider-and-themetoggle) |
+| Switch the look with ready-made modules                   | [Presets](#presets): 4 accents × 3 corner shapes                    |
+| Apply your own brand, typed and checked                   | [`defineTheme`](#custom-themes)                                     |
+| Theme one area differently                                | [`ThemeScope`](#theming-part-of-a-page)                             |
+| Change tokens with plain CSS, no JavaScript               | [Plain HTML and CSS](#plain-html-and-css)                           |
+
+The theme tools have their own entry point, `@dawg-codes/react-toolkit/theme`, and are also exported from the root. ThemeToggle's styles are in `css/theme.css`.
+
+### ThemeProvider and ThemeToggle
+
+```tsx
+import { ThemeProvider, ThemeToggle } from '@dawg-codes/react-toolkit/theme';
+
+export function App() {
+  return (
+    <ThemeProvider>
+      <header>
+        <ThemeToggle />
+      </header>
+      …
+    </ThemeProvider>
+  );
+}
+```
+
+`ThemeProvider` sets `data-dawg-theme` on `<html>` and remembers the choice in `localStorage`. In `system` mode it follows the operating system, including live changes. It keeps open tabs in sync, applies changes before the browser paints, and is safe for server rendering.
+
+| Prop                   | Type                            | Default        | Notes                                                        |
+| ---------------------- | ------------------------------- | -------------- | ------------------------------------------------------------ |
+| `defaultMode`          | `'light' \| 'dark' \| 'system'` | `'system'`     | Used until the user chooses                                  |
+| `mode`, `onModeChange` | as above, and a callback        | —              | Control the mode yourself (nothing is saved to storage then) |
+| `storageKey`           | `string \| null`                | `'dawg-theme'` | `null` turns saving off                                      |
+| `theme`                | `DawgTheme`                     | —              | Token overrides: a preset, your own theme, or several merged |
+
+`ThemeToggle` is a group of native radio buttons (Light, Dark and System), so arrow keys and screen readers work as expected. It has five props:
+
+- `options` sets which choices appear, and in what order.
+- `labels` replaces the text of each choice, for example for translations.
+- `label` names the group for screen readers (default "Theme").
+- `hideLabels` shows icons only; the text stays available to screen readers and as a tooltip.
+- `size` is `'sm'` or `'md'`.
+
+To build your own control, use the hook:
+
+```tsx
+import { useTheme } from '@dawg-codes/react-toolkit/theme';
+
+function DarkModeButton() {
+  // mode: what the user chose. resolvedMode: 'light' or 'dark', what is showing now.
+  const { resolvedMode, toggle } = useTheme();
+  return <Button onClick={toggle}>{resolvedMode === 'dark' ? 'Light mode' : 'Dark mode'}</Button>;
+}
+```
+
+**Avoid a flash of the wrong theme.** React runs after the page first paints, so a dark-mode user would briefly see light colours. A tiny script at the start of the page applies the saved choice straight away:
+
+```tsx
+import { getThemeScript } from '@dawg-codes/react-toolkit/theme';
+
+// For example in a Next.js root layout, inside <body>:
+<script dangerouslySetInnerHTML={{ __html: getThemeScript() }} />;
+```
+
+Pass it the same `storageKey` and `defaultMode` as your `ThemeProvider`. With a strict Content Security Policy, serve it as a small file or allow it with a hash or nonce. The playground injects it with a short Vite plugin (`apps/playground/vite.config.ts`).
+
+### Presets
+
+Presets are ready-made theme modules. Combine one accent with one shape using `mergeThemes`:
+
+```tsx
+import {
+  ThemeProvider,
+  accentPresets,
+  mergeThemes,
+  shapePresets,
+} from '@dawg-codes/react-toolkit/theme';
+
+const theme = mergeThemes(accentPresets.teal, shapePresets.round);
+
+<ThemeProvider theme={theme}>…</ThemeProvider>;
+```
+
+| Module          | Options                                                         |
+| --------------- | --------------------------------------------------------------- |
+| `accentPresets` | `indigo` (the default), `teal`, `pink`, `graphite` (monochrome) |
+| `shapePresets`  | `sharp`, `default`, `round` (also makes buttons pill-shaped)    |
+
+Every accent meets WCAG AA contrast in light and dark mode, and tests check every colour pair. To switch at runtime, change the `theme` prop; the playground's Customise panel does exactly that.
+
+### Custom themes
+
+`defineTheme` creates a theme from token overrides. Token names are typed, so your editor autocompletes all 105 of them. They are also checked when the theme is created, so a typo fails straight away instead of silently doing nothing.
+
+```tsx
+import {
+  ThemeProvider,
+  defineTheme,
+  mergeThemes,
+  shapePresets,
+} from '@dawg-codes/react-toolkit/theme';
+
+const brand = defineTheme({
+  tokens: { 'font-family': '"Inter", system-ui, sans-serif', 'radius-md': '0.375rem' },
+  light: {
+    'color-primary': '#0f766e',
+    'color-primary-solid': '#0f766e',
+    'color-primary-solid-hover': '#115e59',
+  },
+  dark: {
+    'color-primary': '#5eead4',
+    'color-primary-solid': '#0f766e',
+    'color-primary-solid-hover': '#115e59',
+  },
+});
+
+<ThemeProvider theme={mergeThemes(brand, shapePresets.round)}>…</ThemeProvider>;
+```
+
+- `tokens` apply in both modes; `light` and `dark` apply only in that mode.
+- A token's name is its CSS custom property without `--dawg-` (`color-primary-solid` is `--dawg-color-primary-solid`). `DESIGN_TOKENS` and `COMPONENT_TOKENS` list them all.
+- In `mergeThemes`, later themes win where two set the same token.
+- `themeToCssVars(theme, 'light')` returns the CSS variables if you want to apply them yourself.
+- Check colour contrast when you choose your own colours; only the defaults and presets are tested for you.
+
+### Theming part of a page
+
+`ThemeScope` gives one area its own mode or theme, such as a dark sidebar in a light app or a brand preview:
+
+```tsx
+import { ThemeScope, accentPresets } from '@dawg-codes/react-toolkit/theme';
+
+<ThemeScope mode="dark" theme={accentPresets.pink} style={{ background: 'var(--dawg-color-bg)' }}>
+  …
+</ThemeScope>;
+```
+
+It renders a `<div>` and passes through any `<div>` props. Without `mode`, it follows the surrounding mode.
+
+### Plain HTML and CSS
+
+No JavaScript is needed for themes. Light is the default; set `data-dawg-theme` on `<html>`, or on any element to theme just that part of the page:
 
 ```html
 <!-- Always dark -->
@@ -70,11 +214,9 @@ Light is the default. Set `data-dawg-theme` on `<html>`, or on any element to th
 <section data-dawg-theme="light">…</section>
 ```
 
-There is no theme provider or toggle component yet. Set the attribute yourself (the playground shows one way, with the choice saved in `localStorage`).
+#### Customising tokens with CSS
 
-### Customising tokens
-
-Override any token with ordinary CSS. Because the toolkit's styles are in cascade layers, your unlayered rules win without `!important`:
+Override any token with ordinary CSS. Because the toolkit's styles are in cascade layers, your unlayered rules win without `!important`. (A `theme` passed to `ThemeProvider` is applied as inline variables on `<html>`, so it takes priority over these.)
 
 ```css
 :root {
@@ -435,10 +577,13 @@ Components render on the server: there is no `window` or `document` access durin
 ## Known limitations
 
 - **Not published yet.** This is a pre-release workspace package.
-- **No theme provider or toggle yet.** Set `data-dawg-theme` yourself.
 - **No icon set.** Pass your own SVG icons to `icon`, `startIcon` and similar props.
 - **Not included yet:** Tooltip, Tabs and Breadcrumbs.
 - **Button is always a `<button>`.** For links, use `buttonStyleProps()` on an `<a>` or your router's link.
 - **Card's `as` is limited to non-interactive elements**, by design. Use the stretched-link pattern for clickable cards.
 - **Avatar initials come from the first and last words of the name** and may not suit every naming convention. Pass `alt` and a custom `fallback`, or render your own initials, if needed.
 - **Right-to-left layouts are only partly tested.** ProgressBar has been checked in a right-to-left page; the other components use logical properties in most places but have not been tested in RTL yet.
+
+## License
+
+[MIT](LICENSE) © 2026 Dawg Codes
