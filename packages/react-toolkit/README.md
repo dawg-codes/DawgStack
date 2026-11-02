@@ -14,6 +14,7 @@ Accessible, themeable React components and design tokens from **DawgStack**.
 - [Styles](#styles)
 - [Theming](#theming): [ThemeProvider and ThemeToggle](#themeprovider-and-themetoggle) · [Presets](#presets) · [Custom themes](#custom-themes) · [Theming part of a page](#theming-part-of-a-page) · [Plain HTML and CSS](#plain-html-and-css)
 - [Components](#components): [Button](#button) · [Card](#card) · [Badge and StatusBadge](#badge-and-statusbadge) · [Avatar](#avatar) · [Divider](#divider) · [Spinner](#spinner) · [Skeleton](#skeleton) · [ProgressBar](#progressbar) · [EmptyState](#emptystate) · [VisuallyHidden](#visuallyhidden)
+- [Forms](#forms): [Shared props](#shared-props) · [Validation](#validation) · [Controls](#controls)
 - [Browser support](#browser-support)
 - [Known limitations](#known-limitations)
 
@@ -22,7 +23,7 @@ Accessible, themeable React components and design tokens from **DawgStack**.
 Import the CSS once, near the root of your app. Choose one of two options.
 
 ```ts
-// Option 1: everything (about 34 kB unminified, under 7 kB gzipped)
+// Option 1: everything (about 57 kB unminified, about 10 kB gzipped)
 import '@dawg-codes/react-toolkit/styles.css';
 
 // Option 2: only what you use. core.css is always required and must come first.
@@ -31,7 +32,7 @@ import '@dawg-codes/react-toolkit/css/button.css';
 import '@dawg-codes/react-toolkit/css/card.css';
 ```
 
-Component files in `css/` are named after the component's entry point: `avatar`, `badge` (also covers StatusBadge), `button`, `card`, `divider`, `empty-state`, `progress-bar`, `skeleton`, `spinner` and `theme` (ThemeToggle). VisuallyHidden's styles are in `core.css`.
+Component files in `css/` are named after the component's entry point: `avatar`, `badge` (also covers StatusBadge), `button`, `card`, `divider`, `empty-state`, `form` (all form controls), `progress-bar`, `skeleton`, `spinner` and `theme` (ThemeToggle). VisuallyHidden's styles are in `core.css`.
 
 **The CSS is optional.** To use your own styles instead, skip these imports: every component renders stable `dawg-*` class names, plus `data-*` attributes for its options (for example `data-variant="primary"`), for you to style.
 
@@ -148,7 +149,7 @@ Every accent meets WCAG AA contrast in light and dark mode, and tests check ever
 
 ### Custom themes
 
-`defineTheme` creates a theme from token overrides. Token names are typed, so your editor autocompletes all 105 of them. They are also checked when the theme is created, so a typo fails straight away instead of silently doing nothing.
+`defineTheme` creates a theme from token overrides. Token names are typed, so your editor autocompletes all 108 of them. They are also checked when the theme is created, so a typo fails straight away instead of silently doing nothing.
 
 ```tsx
 import {
@@ -236,7 +237,7 @@ Check contrast when you change colours. The defaults pass WCAG AA in both themes
 
 | Group           | Examples                                                                                                                                                                                                           |
 | --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| Surfaces        | `--dawg-color-bg`, `-surface`, `-surface-muted`, `-surface-strong`, `-border`, `-border-strong`                                                                                                                    |
+| Surfaces        | `--dawg-color-bg`, `-surface`, `-surface-muted`, `-surface-strong`, `-border`, `-border-strong`, `-border-input` (form control edges, 3:1 against surfaces)                                                        |
 | Text            | `--dawg-color-text`, `-text-muted`, `-text-subtle`, `--dawg-color-focus-ring`                                                                                                                                      |
 | Tones           | for each of `primary`, `neutral`, `info`, `success`, `warning`, `danger`: `--dawg-color-<tone>` (text and graphics), `-soft` (tinted background), `-border`, `-solid`, `-solid-hover`, `-on-solid` (text on solid) |
 | Type and layout | `--dawg-font-size-xs` … `-xl`, `--dawg-font-weight-*`, `--dawg-space-1` … `-12`, `--dawg-radius-xs` … `-full`, `--dawg-control-height-sm/md/lg`, `--dawg-touch-target`                                             |
@@ -255,6 +256,7 @@ Check contrast when you change colours. The defaults pass WCAG AA in both themes
 | `--dawg-skeleton-radius`                                        | Skeleton corners                                  |
 | `--dawg-spinner-color`, `--dawg-spinner-size`                   | Spinner colour and size                           |
 | `--dawg-progress-track`, `--dawg-progress-fill`                 | ProgressBar colours                               |
+| `--dawg-input-bg`, `--dawg-input-radius`                        | Form control background and corners               |
 
 Every component also accepts `className` and `style`, and exposes its options as `data-*` attributes (for example `data-variant="primary"`) that you can target in CSS.
 
@@ -566,9 +568,122 @@ import { VisuallyHidden } from '@dawg-codes/react-toolkit';
 
 The `.dawg-visually-hidden` class is also available in plain HTML.
 
+## Forms
+
+Labelled form controls built on native elements, so browser autofill, form submission, `FormData` and screen readers work as usual. Each control wires up its label, hint and error message for you. Import them from `@dawg-codes/react-toolkit/form` (or the root); the styles are in `css/form.css`.
+
+```tsx
+import { Checkbox, PasswordField, TextField } from '@dawg-codes/react-toolkit/form';
+
+<TextField name="email" type="email" label="Email" autoComplete="email" required />
+<PasswordField name="password" label="Password" />
+<Checkbox name="remember" label="Keep me signed in" />
+```
+
+### Shared props
+
+Every control takes these:
+
+| Prop        | Type        | Notes                                                                                                                  |
+| ----------- | ----------- | ---------------------------------------------------------------------------------------------------------------------- |
+| `label`     | `ReactNode` | Required, so every control has a name                                                                                  |
+| `hint`      | `ReactNode` | Help text, read by screen readers along with the control                                                               |
+| `error`     | `ReactNode` | Shows the message with an icon and marks the control invalid (`aria-invalid`). `true` marks it invalid with no message |
+| `hideLabel` | `boolean`   | Hides the label visually; screen readers still read it                                                                 |
+
+- **Where props go.** The `ref`, `id` and native attributes (`name`, `required`, `autoComplete`, `onChange` and so on) go to the input itself. `className` and `style` go to the wrapper, so `style={{ maxWidth: 320 }}` sizes the whole field. RadioGroup is the exception: everything goes to its `<fieldset>`.
+- **Ids.** Without an `id`, one is generated. The hint and error get `<id>-hint` and `<id>-error`, and are added to any `aria-describedby` you pass.
+- **Required fields** get a `*` after the label. It's hidden from screen readers, which announce the native `required` instead.
+
+### Validation
+
+Validate in your submit handler, pass the messages to `error`, then call `focusFirstInvalid` so keyboard and screen reader users land on the first problem:
+
+```tsx
+import { Button } from '@dawg-codes/react-toolkit';
+import { focusFirstInvalid, PasswordField, TextField } from '@dawg-codes/react-toolkit/form';
+
+function SignUp() {
+  const [errors, setErrors] = useState<{ email?: string; password?: string }>({});
+
+  function submit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    const data = new FormData(event.currentTarget);
+    const next = validate(data); // your rules
+    setErrors(next);
+    if (Object.keys(next).length) focusFirstInvalid(event.currentTarget);
+    else save(data);
+  }
+
+  return (
+    <form onSubmit={submit} noValidate>
+      <TextField name="email" type="email" label="Email" error={errors.email} required />
+      <PasswordField
+        name="password"
+        label="Password"
+        autoComplete="new-password"
+        error={errors.password}
+      />
+      <Button type="submit" variant="primary">
+        Create account
+      </Button>
+    </form>
+  );
+}
+```
+
+`focusFirstInvalid` waits one frame, so React has rendered the messages first. Write messages that say how to fix the problem ("Enter an email address like name@example.com"), not just that something is wrong.
+
+**Error summary.** For longer forms, show a `FormAlert` at the top that lists every problem and links to each field. It takes focus (`tabIndex={-1}`), so you can move focus to it instead of the first field:
+
+```tsx
+<FormAlert
+  ref={summaryRef}
+  title="There is a problem"
+  items={[
+    { message: 'Enter your email', fieldId: 'email' },
+    { message: 'Choose a plan', fieldId: 'plan' },
+  ]}
+/>
+```
+
+Clicking a link focuses the field and scrolls its label into view; for a radio group, it focuses the checked radio (or the first). Give each field the matching `id`.
+
+### Controls
+
+| Component          | Built on                                          | Its own props                                                                                                       |
+| ------------------ | ------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------- |
+| `TextField`        | `<input>`                                         | `size` (`'sm' \| 'md' \| 'lg'`), `startIcon` (decorative), `endAddon` (a unit such as `kg`, or a small button)      |
+| `TextArea`         | `<textarea>`                                      | `autoGrow` (grows with the text, from `rows` lines; default 3)                                                      |
+| `SelectField`      | `<select>`                                        | `options` (objects or strings, or pass `<option>`s), `placeholder`, `size`                                          |
+| `Checkbox`         | `<input type="checkbox">`                         | `indeterminate` (for "select all")                                                                                  |
+| `RadioGroup`       | `<fieldset role="radiogroup">` with native radios | `options`, `value` / `defaultValue` / `onValueChange`, `name`, `required`, `orientation`, `variant` (`'card'`)      |
+| `Switch`           | `<input type="checkbox" role="switch">`           | `labelPlacement` (`'start' \| 'end'`)                                                                               |
+| `SearchField`      | `<input type="search">`                           | `value` / `defaultValue` / `onValueChange`, `clearLabel`                                                            |
+| `PasswordField`    | `<input type="password">`                         | `strength`, `showLabel`, `strengthPrefix`                                                                           |
+| `OneTimeCodeField` | `<input>`                                         | `length` (6), `characters` (`'digits' \| 'alphanumeric'`), `value` / `defaultValue` / `onValueChange`, `onComplete` |
+| `FormAlert`        | `<div role="alert">` or `role="status"`           | `title`, `items`, `tone` (`'danger' \| 'warning' \| 'info' \| 'success'`)                                           |
+| `FieldError`       | `<p>`                                             | An error message with its icon, for your own controls                                                               |
+
+**SelectField** is the browser's own picker, which works well on phones and with screen readers. With `placeholder` it starts on an empty choice; when the field is `required`, that choice can't be picked again, so the browser's required check works. Multiple selection isn't supported.
+
+**RadioGroup** uses native radios, so arrow keys move between choices. The group carries the `error`, `hint`, `required` and `disabled` state; each option can have its own `hint` and `disabled`. With `variant="card"` each choice is a bordered box that is clickable anywhere.
+
+**Switch** is for settings that apply straight away. In a form that is submitted, use a Checkbox. It works like a checkbox: `checked`, `defaultChecked` and `onChange`.
+
+**SearchField** shows a clear button once there is text. Escape also clears it; when the field is already empty, Escape is passed on (for example, to close a dialog). Put it inside a `<search>` element or `<form role="search">`.
+
+**PasswordField** has a show/hide button: a toggle (`aria-pressed`) whose name stays "Show password". The password is hidden again when its form is submitted, so browsers still offer to save it. It defaults to `autoComplete="current-password"`; use `"new-password"` on sign-up and reset forms.
+
+Pass `strength={estimatePasswordStrength}` to show a meter on sign-up forms (not sign-in). The meter's text is linked to the field and announced politely when it changes. `estimatePasswordStrength` is a rough, offline guide: length counts most, mixing character types helps, and common passwords, repeats and sequences ("1234", "qwer") count against it. It is not a security check: enforce your real rules on the server, ideally including a check against breached-password lists. You can pass your own function returning `{ score: 0–4, label }`, or translated labels as its second argument.
+
+**OneTimeCodeField** is a single input, not one box per digit, so pasting, the browser's one-time-code autofill and screen readers all work. Spaces, dashes and other characters that can't be part of the code are removed as users type or paste. `onComplete` is called once the code is full, for example to submit automatically.
+
+**FormAlert** is announced at once for `danger` and `warning` (`role="alert"`), and politely for `info` and `success` (`role="status"`). Extra `children` are shown under the title.
+
 ## Browser support
 
-The styles need cascade layers, `color-mix()` and logical properties, which are supported in Chrome and Edge 111+, Firefox 113+ and Safari 16.2+ (all released in 2023). Browsers without cascade-layer support ignore the styles completely. The interactive card's focus ring around the whole card needs `:has()`; without it, the focus ring stays on the link itself.
+The styles need cascade layers, `color-mix()` and logical properties, which are supported in Chrome and Edge 111+, Firefox 113+ and Safari 16.2+ (all released in 2023). Browsers without cascade-layer support ignore the styles completely. `:has()` is used for the interactive card's focus ring, the focus ring around a whole form control (with its icon and buttons) and the selected radio card's border. Without it, the card's ring stays on the link, form controls fall back to `:focus-within`, and a selected radio card shows only its checked radio. TextArea's `autoGrow` needs CSS `field-sizing` (Chrome and Edge 123+); elsewhere the text area keeps its height and users can resize it.
 
 ## Server rendering and React Server Components
 
@@ -578,11 +693,11 @@ Components render on the server: there is no `window` or `document` access durin
 
 - **Not published yet.** This is a pre-release workspace package.
 - **No icon set.** Pass your own SVG icons to `icon`, `startIcon` and similar props.
-- **Not included yet:** Tooltip, Tabs and Breadcrumbs.
+- **Not included yet:** Tooltip, Tabs and Breadcrumbs; in forms, multiple select, combobox (autocomplete), date picker and file upload.
 - **Button is always a `<button>`.** For links, use `buttonStyleProps()` on an `<a>` or your router's link.
 - **Card's `as` is limited to non-interactive elements**, by design. Use the stretched-link pattern for clickable cards.
 - **Avatar initials come from the first and last words of the name** and may not suit every naming convention. Pass `alt` and a custom `fallback`, or render your own initials, if needed.
-- **Right-to-left layouts are only partly tested.** ProgressBar has been checked in a right-to-left page; the other components use logical properties in most places but have not been tested in RTL yet.
+- **Right-to-left layouts are only partly tested.** ProgressBar and Switch have been checked in a right-to-left page; the other components use logical properties in most places but have not been tested in RTL yet.
 
 ## License
 

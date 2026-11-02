@@ -35,6 +35,7 @@ import {
   type AccentPresetName,
   type ShapePresetName,
 } from '@dawg-codes/react-toolkit/theme';
+import { FormsDemo } from './FormsDemo';
 import {
   AlertIcon,
   ArrowRightIcon,
@@ -262,6 +263,10 @@ function Playground({ customise }: { customise: ReactNode }) {
           <Button variant="secondary" fullWidth>
             Full width
           </Button>
+        </Section>
+
+        <Section id="forms" title="Form controls">
+          <FormsDemo />
         </Section>
 
         <Section id="cards" title="Card">
