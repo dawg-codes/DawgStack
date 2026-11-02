@@ -1,0 +1,210 @@
+{
+  "name": "@dawg-codes/react-toolkit",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Accessible, themeable React components and design tokens from DawgStack.",
+  "keywords": [
+    "react",
+    "components",
+    "design-system",
+    "design-tokens",
+    "ui",
+    "accessibility"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dawg-codes/DawgStack.git",
+    "directory": "packages/react-toolkit"
+  },
+  "type": "module",
+  "sideEffects": [
+    "**/*.css"
+  ],
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.cts",
+  "typesVersions": {
+    "*": {
+      "avatar": [
+        "./dist/avatar.d.cts"
+      ],
+      "badge": [
+        "./dist/badge.d.cts"
+      ],
+      "button": [
+        "./dist/button.d.cts"
+      ],
+      "card": [
+        "./dist/card.d.cts"
+      ],
+      "divider": [
+        "./dist/divider.d.cts"
+      ],
+      "empty-state": [
+        "./dist/empty-state.d.cts"
+      ],
+      "progress-bar": [
+        "./dist/progress-bar.d.cts"
+      ],
+      "skeleton": [
+        "./dist/skeleton.d.cts"
+      ],
+      "spinner": [
+        "./dist/spinner.d.cts"
+      ],
+      "visually-hidden": [
+        "./dist/visually-hidden.d.cts"
+      ]
+    }
+  },
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      },
+      "require": {
+        "types": "./dist/index.d.cts",
+        "default": "./dist/index.cjs"
+      }
+    },
+    "./avatar": {
+      "import": {
+        "types": "./dist/avatar.d.ts",
+        "default": "./dist/avatar.js"
+      },
+      "require": {
+        "types": "./dist/avatar.d.cts",
+        "default": "./dist/avatar.cjs"
+      }
+    },
+    "./badge": {
+      "import": {
+        "types": "./dist/badge.d.ts",
+        "default": "./dist/badge.js"
+      },
+      "require": {
+        "types": "./dist/badge.d.cts",
+        "default": "./dist/badge.cjs"
+      }
+    },
+    "./button": {
+      "import": {
+        "types": "./dist/button.d.ts",
+        "default": "./dist/button.js"
+      },
+      "require": {
+        "types": "./dist/button.d.cts",
+        "default": "./dist/button.cjs"
+      }
+    },
+    "./card": {
+      "import": {
+        "types": "./dist/card.d.ts",
+        "default": "./dist/card.js"
+      },
+      "require": {
+        "types": "./dist/card.d.cts",
+        "default": "./dist/card.cjs"
+      }
+    },
+    "./divider": {
+      "import": {
+        "types": "./dist/divider.d.ts",
+        "default": "./dist/divider.js"
+      },
+      "require": {
+        "types": "./dist/divider.d.cts",
+        "default": "./dist/divider.cjs"
+      }
+    },
+    "./empty-state": {
+      "import": {
+        "types": "./dist/empty-state.d.ts",
+        "default": "./dist/empty-state.js"
+      },
+      "require": {
+        "types": "./dist/empty-state.d.cts",
+        "default": "./dist/empty-state.cjs"
+      }
+    },
+    "./progress-bar": {
+      "import": {
+        "types": "./dist/progress-bar.d.ts",
+        "default": "./dist/progress-bar.js"
+      },
+      "require": {
+        "types": "./dist/progress-bar.d.cts",
+        "default": "./dist/progress-bar.cjs"
+      }
+    },
+    "./skeleton": {
+      "import": {
+        "types": "./dist/skeleton.d.ts",
+        "default": "./dist/skeleton.js"
+      },
+      "require": {
+        "types": "./dist/skeleton.d.cts",
+        "default": "./dist/skeleton.cjs"
+      }
+    },
+    "./spinner": {
+      "import": {
+        "types": "./dist/spinner.d.ts",
+        "default": "./dist/spinner.js"
+      },
+      "require": {
+        "types": "./dist/spinner.d.cts",
+        "default": "./dist/spinner.cjs"
+      }
+    },
+    "./visually-hidden": {
+      "import": {
+        "types": "./dist/visually-hidden.d.ts",
+        "default": "./dist/visually-hidden.js"
+      },
+      "require": {
+        "types": "./dist/visually-hidden.d.cts",
+        "default": "./dist/visually-hidden.cjs"
+      }
+    },
+    "./core.css": "./dist/core.css",
+    "./styles.css": "./dist/styles.css",
+    "./css/*.css": "./dist/css/*.css",
+    "./package.json": "./package.json"
+  },
+  "scripts": {
+    "build": "tsdown && node scripts/build-css.mjs",
+    "dev": "tsdown --watch",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "check:package": "publint --strict && attw --pack . --exclude-entrypoints ./core.css ./styles.css \"./css/*.css\"",
+    "sync-exports": "node scripts/sync-exports.mjs"
+  },
+  "peerDependencies": {
+    "react": "^18.2.0 || ^19.0.0"
+  },
+  "devDependencies": {
+    "@arethetypeswrong/cli": "0.18.5",
+    "@testing-library/dom": "^10.4.2",
+    "@testing-library/jest-dom": "7.0.1",
+    "@testing-library/react": "16.3.3",
+    "@testing-library/user-event": "14.6.8",
+    "@types/node": "^22.20.5",
+    "@types/react": "19.3.0",
+    "@types/react-dom": "19.3.0",
+    "axe-core": "4.14.0",
+    "jsdom": "30.1.3",
+    "publint": "0.3.25",
+    "react": "19.3.1",
+    "react-dom": "19.3.1",
+    "tsdown": "0.23.4",
+    "typescript": "5.9.3",
+    "vitest": "5.0.5"
+  }
+}

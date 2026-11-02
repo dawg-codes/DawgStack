@@ -1,0 +1,96 @@
+@layer dawg.components {
+  .dawg-progress {
+    --_h: 0.5rem;
+    --_fill: var(--dawg-color-primary);
+    display: grid;
+    gap: var(--dawg-space-2);
+    width: 100%;
+    min-width: 0;
+    font-family: var(--dawg-font-family, inherit);
+  }
+  .dawg-progress[data-size='sm'] {
+    --_h: 0.25rem;
+  }
+  .dawg-progress[data-size='lg'] {
+    --_h: 0.75rem;
+  }
+
+  .dawg-progress[data-tone='neutral'] {
+    --_fill: var(--dawg-color-neutral);
+  }
+  .dawg-progress[data-tone='info'] {
+    --_fill: var(--dawg-color-info);
+  }
+  .dawg-progress[data-tone='success'] {
+    --_fill: var(--dawg-color-success);
+  }
+  .dawg-progress[data-tone='warning'] {
+    --_fill: var(--dawg-color-warning);
+  }
+  .dawg-progress[data-tone='danger'] {
+    --_fill: var(--dawg-color-danger);
+  }
+
+  .dawg-progress__header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--dawg-space-3);
+    font-size: var(--dawg-font-size-sm);
+    line-height: var(--dawg-line-height-tight);
+  }
+  .dawg-progress__label {
+    min-width: 0;
+    color: var(--dawg-color-text);
+    font-weight: var(--dawg-font-weight-medium);
+    overflow-wrap: anywhere;
+  }
+  .dawg-progress__value {
+    flex: none;
+    margin-inline-start: auto;
+    color: var(--dawg-color-text-muted);
+    font-variant-numeric: tabular-nums;
+  }
+  .dawg-progress__track {
+    position: relative;
+    height: var(--_h);
+    overflow: hidden;
+    border-radius: var(--dawg-radius-full);
+    background: var(--dawg-progress-track, var(--dawg-color-track));
+  }
+  /* Logical properties, so the bar fills from the right in right-to-left layouts. */
+  .dawg-progress__fill {
+    position: absolute;
+    inset-block: 0;
+    inset-inline-start: 0;
+    inline-size: calc(var(--_value, 0) * 100%);
+    border-radius: inherit;
+    background: var(--dawg-progress-fill, var(--_fill));
+  }
+  .dawg-progress[data-indeterminate] .dawg-progress__fill {
+    inline-size: 40%;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .dawg-progress__fill {
+      transition: inline-size var(--dawg-duration-slow) var(--dawg-easing-emphasized);
+    }
+    .dawg-progress[data-indeterminate] .dawg-progress__fill {
+      animation: dawg-slide 1.4s var(--dawg-easing-standard) infinite;
+    }
+  }
+  /* Without motion, an indeterminate bar is a calm, half-strength full bar. */
+  @media (prefers-reduced-motion: reduce) {
+    .dawg-progress[data-indeterminate] .dawg-progress__fill {
+      inline-size: 100%;
+      opacity: 0.45;
+    }
+  }
+  @media (forced-colors: active) {
+    .dawg-progress__track {
+      border: 1px solid CanvasText;
+    }
+    .dawg-progress__fill {
+      background: Highlight;
+    }
+  }
+}

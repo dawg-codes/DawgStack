@@ -1,0 +1,59 @@
+@layer dawg.components {
+  .dawg-avatar {
+    --_size: 2.5rem;
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: none;
+    box-sizing: border-box;
+    width: var(--dawg-avatar-size, var(--_size));
+    height: var(--dawg-avatar-size, var(--_size));
+    overflow: hidden;
+    border-radius: 50%;
+    background: var(--dawg-avatar-bg, var(--dawg-color-primary-soft));
+    color: var(--dawg-avatar-color, var(--dawg-color-primary));
+    font-family: var(--dawg-font-family, inherit);
+    font-size: calc(var(--dawg-avatar-size, var(--_size)) * 0.4);
+    font-weight: var(--dawg-font-weight-semibold);
+    line-height: 1;
+    letter-spacing: 0.02em;
+    vertical-align: middle;
+    user-select: none;
+  }
+  .dawg-avatar[data-size='xs'] {
+    --_size: 1.5rem;
+  }
+  .dawg-avatar[data-size='sm'] {
+    --_size: 2rem;
+  }
+  .dawg-avatar[data-size='lg'] {
+    --_size: 3rem;
+  }
+  .dawg-avatar[data-size='xl'] {
+    --_size: 4rem;
+  }
+  .dawg-avatar[data-shape='square'] {
+    border-radius: 22%;
+  }
+  .dawg-avatar__image {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .dawg-avatar__fallback {
+    display: inline-flex;
+    width: 62%;
+    height: 62%;
+  }
+  .dawg-avatar__fallback svg {
+    width: 100%;
+    height: 100%;
+  }
+  @media (forced-colors: active) {
+    .dawg-avatar {
+      border: 1px solid CanvasText;
+    }
+  }
+}

@@ -1,0 +1,51 @@
+@layer dawg.components {
+  .dawg-skeleton {
+    display: block;
+    box-sizing: border-box;
+    width: var(--_w, 100%);
+    height: var(--_h, 1rem);
+    border-radius: var(--dawg-skeleton-radius, var(--dawg-radius-sm));
+    background-color: var(--dawg-color-skeleton);
+  }
+  .dawg-skeleton[data-variant='text'] {
+    height: var(--_h, 0.8em);
+    margin-block: 0.35em;
+    border-radius: var(--dawg-radius-xs);
+  }
+  .dawg-skeleton[data-variant='circle'] {
+    flex: none;
+    width: var(--_w, 2.5rem);
+    height: var(--_h, var(--_w, 2.5rem));
+    border-radius: 50%;
+  }
+  .dawg-skeleton-group {
+    display: block;
+    width: var(--_w, 100%);
+  }
+  /* Lines inside a group take the group's width; the last one is shorter, like real text. */
+  .dawg-skeleton-group > .dawg-skeleton {
+    width: 100%;
+  }
+  .dawg-skeleton-group > .dawg-skeleton[data-last] {
+    width: 60%;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .dawg-skeleton[data-animated],
+    .dawg-skeleton-group[data-animated] > .dawg-skeleton {
+      background-image: linear-gradient(
+        90deg,
+        transparent 0%,
+        var(--dawg-color-skeleton-highlight) 50%,
+        transparent 100%
+      );
+      background-size: 200% 100%;
+      background-repeat: no-repeat;
+      animation: dawg-shimmer 1.4s ease-in-out infinite;
+    }
+  }
+  @media (forced-colors: active) {
+    .dawg-skeleton {
+      background: GrayText;
+    }
+  }
+}

@@ -1,0 +1,166 @@
+@layer dawg.components {
+  .dawg-button {
+    --_h: var(--dawg-control-height-md);
+    --_px: var(--dawg-space-4);
+    --_fs: var(--dawg-font-size-sm);
+    --_bg: var(--dawg-color-surface-muted);
+    --_bg-hover: var(--dawg-color-surface-strong);
+    --_fg: var(--dawg-color-text);
+    --_border: transparent;
+    --_border-hover: var(--_border);
+
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    max-width: 100%;
+    min-height: var(--_h);
+    margin: 0;
+    padding: 0 var(--_px);
+    border: 1px solid var(--_border);
+    border-radius: var(--dawg-button-radius, var(--dawg-radius-md));
+    background: var(--_bg);
+    color: var(--_fg);
+    font-family: var(--dawg-font-family, inherit);
+    font-size: var(--_fs);
+    font-weight: var(--dawg-font-weight-semibold);
+    line-height: var(--dawg-line-height-tight);
+    text-align: center;
+    text-decoration: none;
+    white-space: nowrap;
+    vertical-align: middle;
+    cursor: pointer;
+    user-select: none;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    transition:
+      background-color var(--dawg-duration-fast) var(--dawg-easing-standard),
+      border-color var(--dawg-duration-fast) var(--dawg-easing-standard),
+      color var(--dawg-duration-fast) var(--dawg-easing-standard),
+      transform var(--dawg-duration-fast) var(--dawg-easing-standard);
+  }
+
+  /* ---------- Sizes ---------- */
+  .dawg-button[data-size='sm'] {
+    --_h: var(--dawg-control-height-sm);
+    --_px: var(--dawg-space-3);
+  }
+  .dawg-button[data-size='lg'] {
+    --_h: var(--dawg-control-height-lg);
+    --_px: var(--dawg-space-6);
+    --_fs: var(--dawg-font-size-md);
+  }
+  /* Fingers need bigger targets than mouse pointers. */
+  @media (pointer: coarse) {
+    .dawg-button[data-size='sm'] {
+      --_h: var(--dawg-control-height-md);
+    }
+    .dawg-button[data-size='md'] {
+      --_h: var(--dawg-touch-target);
+    }
+  }
+
+  /* ---------- Variants ---------- */
+  .dawg-button[data-variant='primary'] {
+    --_bg: var(--dawg-color-primary-solid);
+    --_bg-hover: var(--dawg-color-primary-solid-hover);
+    --_fg: var(--dawg-color-primary-on-solid);
+  }
+  .dawg-button[data-variant='outline'] {
+    --_bg: transparent;
+    --_bg-hover: var(--dawg-color-surface-muted);
+    --_border: var(--dawg-color-border-strong);
+    --_border-hover: var(--dawg-color-text-subtle);
+  }
+  .dawg-button[data-variant='ghost'] {
+    --_bg: transparent;
+    --_bg-hover: var(--dawg-color-surface-muted);
+  }
+  .dawg-button[data-variant='danger'] {
+    --_bg: var(--dawg-color-danger-solid);
+    --_bg-hover: var(--dawg-color-danger-solid-hover);
+    --_fg: var(--dawg-color-danger-on-solid);
+  }
+
+  /* ---------- Layout options ---------- */
+  .dawg-button[data-full-width] {
+    display: flex;
+    width: 100%;
+  }
+  .dawg-button[data-icon-only] {
+    min-width: var(--_h);
+    padding: 0;
+  }
+
+  /* ---------- States ---------- */
+  @media (hover: hover) {
+    .dawg-button:hover:not(:disabled, [aria-disabled='true']) {
+      background: var(--_bg-hover);
+      border-color: var(--_border-hover);
+    }
+  }
+  .dawg-button:focus-visible {
+    outline: var(--dawg-focus-ring-width) solid var(--dawg-color-focus-ring);
+    outline-offset: var(--dawg-focus-ring-offset);
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .dawg-button:active:not(:disabled, [aria-disabled='true']) {
+      transform: scale(0.98);
+    }
+  }
+  .dawg-button:disabled,
+  .dawg-button[aria-disabled='true']:not([data-loading]) {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+  .dawg-button[data-loading] {
+    cursor: progress;
+  }
+
+  /* ---------- Content ---------- */
+  .dawg-button__content {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--dawg-space-2);
+    min-width: 0;
+  }
+  .dawg-button__label {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .dawg-button__icon {
+    display: inline-flex;
+    flex: none;
+  }
+  .dawg-button__icon svg,
+  .dawg-button[data-icon-only] svg {
+    width: 1.15em;
+    height: 1.15em;
+    flex: none;
+  }
+  /* Fade the content (not visibility:hidden) so the accessible name stays while loading. */
+  .dawg-button[data-loading] .dawg-button__content {
+    opacity: 0;
+  }
+  .dawg-button__spinner {
+    position: absolute;
+    inset: 0;
+    box-sizing: border-box;
+    width: 1.15em;
+    height: 1.15em;
+    margin: auto;
+    border: 2px solid transparent;
+    border-color: color-mix(in srgb, currentColor 25%, transparent);
+    border-top-color: currentColor;
+    border-radius: 50%;
+    animation: dawg-spin 0.75s linear infinite;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .dawg-button__spinner {
+      animation-duration: 1.6s;
+    }
+  }
+}

@@ -1,0 +1,46 @@
+@layer dawg.components {
+  .dawg-spinner {
+    --_size: 1.25rem;
+    --_stroke: 2px;
+    display: inline-flex;
+    align-items: center;
+    gap: var(--dawg-space-2);
+    vertical-align: middle;
+    color: var(--dawg-spinner-color, currentColor);
+    font-family: var(--dawg-font-family, inherit);
+    font-size: var(--dawg-font-size-sm);
+  }
+  .dawg-spinner[data-size='sm'] {
+    --_size: 1rem;
+  }
+  .dawg-spinner[data-size='lg'] {
+    --_size: 2rem;
+    --_stroke: 3px;
+  }
+  .dawg-spinner__circle {
+    flex: none;
+    box-sizing: border-box;
+    width: var(--dawg-spinner-size, var(--_size));
+    height: var(--dawg-spinner-size, var(--_size));
+    border: var(--_stroke) solid transparent;
+    border-color: color-mix(in srgb, currentColor 22%, transparent);
+    border-top-color: currentColor;
+    border-radius: 50%;
+    animation: dawg-spin 0.75s linear infinite;
+  }
+  .dawg-spinner__label {
+    color: var(--dawg-color-text-muted);
+  }
+  /* A stopped spinner looks frozen, so reduced motion slows it down instead. */
+  @media (prefers-reduced-motion: reduce) {
+    .dawg-spinner__circle {
+      animation-duration: 1.6s;
+    }
+  }
+  @media (forced-colors: active) {
+    .dawg-spinner__circle {
+      border-color: GrayText;
+      border-top-color: CanvasText;
+    }
+  }
+}

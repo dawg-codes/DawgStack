@@ -1,0 +1,117 @@
+@layer dawg.components {
+  .dawg-card {
+    --_padding: clamp(1rem, 0.75rem + 0.8vw, 1.5rem);
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: var(--dawg-card-gap, var(--dawg-space-3));
+    box-sizing: border-box;
+    min-width: 0;
+    margin: 0;
+    padding: var(--_padding);
+    border: 1px solid transparent;
+    border-radius: var(--dawg-card-radius, var(--dawg-radius-lg));
+    background: var(--dawg-card-bg, var(--dawg-color-surface));
+    color: var(--dawg-color-text);
+    font-family: var(--dawg-font-family, inherit);
+    list-style: none;
+  }
+
+  /* ---------- Padding ---------- */
+  .dawg-card[data-padding='none'] {
+    --_padding: 0;
+  }
+  .dawg-card[data-padding='sm'] {
+    --_padding: var(--dawg-space-3);
+  }
+  .dawg-card[data-padding='lg'] {
+    --_padding: clamp(1.25rem, 0.9rem + 1.2vw, 2rem);
+  }
+
+  /* ---------- Variants ---------- */
+  .dawg-card[data-variant='bordered'] {
+    border-color: var(--dawg-color-border);
+  }
+  .dawg-card[data-variant='elevated'] {
+    /* A faint edge keeps elevated cards visible in dark mode, where shadows barely show. */
+    border-color: color-mix(in srgb, var(--dawg-color-border) 60%, transparent);
+    box-shadow: var(--dawg-shadow-md);
+  }
+
+  /* ---------- Interactive ---------- */
+  .dawg-card[data-interactive] {
+    transition:
+      border-color var(--dawg-duration-normal) var(--dawg-easing-standard),
+      box-shadow var(--dawg-duration-normal) var(--dawg-easing-standard),
+      transform var(--dawg-duration-normal) var(--dawg-easing-emphasized);
+  }
+  @media (hover: hover) {
+    .dawg-card[data-interactive]:hover {
+      border-color: var(--dawg-color-border-strong);
+      box-shadow: var(--dawg-shadow-lg);
+    }
+  }
+  @media (hover: hover) and (prefers-reduced-motion: no-preference) {
+    .dawg-card[data-interactive]:hover {
+      transform: translateY(-2px);
+    }
+  }
+  /* Stretched link: its click area covers the whole card. */
+  .dawg-card__link {
+    color: inherit;
+    text-decoration: none;
+  }
+  .dawg-card[data-interactive] .dawg-card__link::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    border-radius: inherit;
+  }
+  /* Other controls inside the card stay clickable above the stretched link. */
+  .dawg-card[data-interactive]
+    :is(a, button, input, select, textarea, summary):not(.dawg-card__link) {
+    position: relative;
+    z-index: 1;
+  }
+  /* Draw the focus ring around the whole card instead of the link text, where supported. */
+  @supports selector(:has(*)) {
+    .dawg-card[data-interactive]:has(.dawg-card__link:focus-visible) {
+      outline: var(--dawg-focus-ring-width) solid var(--dawg-color-focus-ring);
+      outline-offset: var(--dawg-focus-ring-offset);
+    }
+    .dawg-card[data-interactive] .dawg-card__link:focus-visible {
+      outline: none;
+    }
+  }
+
+  /* ---------- Parts ---------- */
+  .dawg-card__header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: var(--dawg-space-2) var(--dawg-space-3);
+  }
+  .dawg-card__title {
+    margin: 0;
+    font-size: var(--dawg-font-size-lg);
+    font-weight: var(--dawg-font-weight-semibold);
+    line-height: var(--dawg-line-height-tight);
+    overflow-wrap: anywhere;
+  }
+  .dawg-card__description {
+    margin: 0;
+    color: var(--dawg-color-text-muted);
+    font-size: var(--dawg-font-size-sm);
+    line-height: var(--dawg-line-height-normal);
+  }
+  .dawg-card__footer {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: flex-end;
+    gap: var(--dawg-space-2);
+    margin-top: auto;
+  }
+}
