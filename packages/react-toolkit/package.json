@@ -42,6 +42,9 @@
       "card": [
         "./dist/card.d.cts"
       ],
+      "csv": [
+        "./dist/csv.d.cts"
+      ],
       "dialog": [
         "./dist/dialog.d.cts"
       ],
@@ -60,6 +63,9 @@
       "menu": [
         "./dist/menu.d.cts"
       ],
+      "pagination": [
+        "./dist/pagination.d.cts"
+      ],
       "progress-bar": [
         "./dist/progress-bar.d.cts"
       ],
@@ -68,6 +74,9 @@
       ],
       "spinner": [
         "./dist/spinner.d.cts"
+      ],
+      "table": [
+        "./dist/table.d.cts"
       ],
       "theme": [
         "./dist/theme.d.cts"
@@ -131,6 +140,16 @@
         "default": "./dist/card.cjs"
       }
     },
+    "./csv": {
+      "import": {
+        "types": "./dist/csv.d.ts",
+        "default": "./dist/csv.js"
+      },
+      "require": {
+        "types": "./dist/csv.d.cts",
+        "default": "./dist/csv.cjs"
+      }
+    },
     "./dialog": {
       "import": {
         "types": "./dist/dialog.d.ts",
@@ -191,6 +210,16 @@
         "default": "./dist/menu.cjs"
       }
     },
+    "./pagination": {
+      "import": {
+        "types": "./dist/pagination.d.ts",
+        "default": "./dist/pagination.js"
+      },
+      "require": {
+        "types": "./dist/pagination.d.cts",
+        "default": "./dist/pagination.cjs"
+      }
+    },
     "./progress-bar": {
       "import": {
         "types": "./dist/progress-bar.d.ts",
@@ -219,6 +248,16 @@
       "require": {
         "types": "./dist/spinner.d.cts",
         "default": "./dist/spinner.cjs"
+      }
+    },
+    "./table": {
+      "import": {
+        "types": "./dist/table.d.ts",
+        "default": "./dist/table.js"
+      },
+      "require": {
+        "types": "./dist/table.d.cts",
+        "default": "./dist/table.cjs"
       }
     },
     "./theme": {

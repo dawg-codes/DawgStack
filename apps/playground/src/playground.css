@@ -281,3 +281,29 @@ a:not([class]) {
   font-weight: var(--dawg-font-weight-bold);
   line-height: var(--dawg-line-height-tight);
 }
+/* ---------- Data table demo ---------- */
+.pg-table-card {
+  gap: 1rem;
+}
+.pg-table-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  align-items: center;
+}
+.pg-table-toolbar > .dawg-field:first-child {
+  flex: 1 1 16rem;
+}
+.pg-person {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+.pg-person > span {
+  display: grid;
+}
+.pg-person-email {
+  color: var(--dawg-color-text-muted);
+  font-size: var(--dawg-font-size-xs);
+  font-weight: var(--dawg-font-weight-regular);
+}

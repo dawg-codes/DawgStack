@@ -17,6 +17,7 @@ Accessible, themeable React components and design tokens from **DawgStack**.
 - [Forms](#forms): [Shared props](#shared-props) · [Validation](#validation) · [Controls](#controls)
 - [Dialogs, toasts and menus](#dialogs-toasts-and-menus): [Dialog](#dialog) · [ConfirmDialog](#confirmdialog) · [Toasts](#toasts) · [DropdownMenu](#dropdownmenu)
 - [App layout](#app-layout): [AppShell and AppHeader](#appshell-and-appheader) · [SideNav and MobileTabBar](#sidenav-and-mobiletabbar) · [PageHeader](#pageheader) · [AuthLayout](#authlayout)
+- [Data](#data): [DataTable](#datatable) · [Pagination](#pagination) · [CSV](#csv)
 - [Browser support](#browser-support)
 - [Known limitations](#known-limitations)
 
@@ -25,7 +26,7 @@ Accessible, themeable React components and design tokens from **DawgStack**.
 Import the CSS once, near the root of your app. Choose one of two options.
 
 ```ts
-// Option 1: everything (about 84 kB unminified, about 14 kB gzipped)
+// Option 1: everything (about 94 kB unminified, about 15 kB gzipped)
 import '@dawg-codes/react-toolkit/styles.css';
 
 // Option 2: only what you use. core.css is always required and must come first.
@@ -34,7 +35,7 @@ import '@dawg-codes/react-toolkit/css/button.css';
 import '@dawg-codes/react-toolkit/css/card.css';
 ```
 
-Component files in `css/` are named after the component's entry point: `avatar`, `badge` (also covers StatusBadge), `button`, `card`, `dialog` (also covers ConfirmDialog), `divider`, `empty-state`, `form` (all form controls), `layout` (AppShell, AppHeader, SideNav, MobileTabBar, PageHeader and AuthLayout), `menu` (DropdownMenu), `progress-bar`, `skeleton`, `spinner`, `theme` (ThemeToggle) and `toast`. VisuallyHidden's styles are in `core.css`. ConfirmDialog and DropdownMenu are built with Button, so they also need `button.css`; AppShell's narrow-screen drawer is a Dialog, so it needs `dialog.css`.
+Component files in `css/` are named after the component's entry point: `avatar`, `badge` (also covers StatusBadge), `button`, `card`, `dialog` (also covers ConfirmDialog), `divider`, `empty-state`, `form` (all form controls), `layout` (AppShell, AppHeader, SideNav, MobileTabBar, PageHeader and AuthLayout), `menu` (DropdownMenu), `pagination`, `progress-bar`, `skeleton`, `spinner`, `table` (DataTable), `theme` (ThemeToggle) and `toast`. The `csv` entry has no styles. VisuallyHidden's styles are in `core.css`. ConfirmDialog and DropdownMenu are built with Button, so they also need `button.css`; AppShell's narrow-screen drawer is a Dialog, so it needs `dialog.css`; and DataTable uses Button, DropdownMenu and Skeleton, so it needs their files too.
 
 **The CSS is optional.** To use your own styles instead, skip these imports: every component renders stable `dawg-*` class names, plus `data-*` attributes for its options (for example `data-variant="primary"`), for you to style.
 
@@ -942,6 +943,113 @@ import { AuthLayout } from '@dawg-codes/react-toolkit/layout';
 
 The form sits in a centred panel inside `<main>`, under an `<h1>`. `actions` go in a `<header>` in the top corner, and `aside` becomes an `<aside>` panel in the accent colour on screens 64rem and wider (hidden on smaller ones, so don't put anything essential there).
 
+## Data
+
+Lists of records: import from `@dawg-codes/react-toolkit/table`, `/pagination` and `/csv` (or the root). The playground's "Data table" section puts them together with search, a filter, bulk actions and export.
+
+### DataTable
+
+A real `<table>`, so screen readers announce rows, columns and headers, with sorting, selection, row actions, and loading and empty states.
+
+```tsx
+import { DataTable, type DataTableColumn } from '@dawg-codes/react-toolkit/table';
+
+const columns: DataTableColumn<Member>[] = [
+  { key: 'name', header: 'Name', rowHeader: true, sortable: true },
+  { key: 'role', header: 'Role', sortable: true },
+  {
+    key: 'status',
+    header: 'Status',
+    cell: (m) => <MemberStatus status={m.status} />,
+    value: (m) => m.status,
+  },
+  { key: 'projects', header: 'Projects', sortable: true, align: 'end', hideBelow: 'md' },
+];
+
+<DataTable
+  caption="Team members"
+  columns={columns}
+  rows={members}
+  getRowId={(m) => m.id}
+  selectable
+  bulkActions={(ids, clear) => (
+    <Button
+      size="sm"
+      variant="danger"
+      onClick={() => {
+        remove(ids);
+        clear();
+      }}
+    >
+      Remove
+    </Button>
+  )}
+  rowActions={(m) => [
+    { label: 'Edit', onSelect: () => edit(m) },
+    'separator',
+    { label: 'Remove', tone: 'danger', onSelect: () => confirmRemove(m) },
+  ]}
+  empty={<EmptyState size="sm" title="No members found" />}
+/>;
+```
+
+**Columns.** Each has a `key` and `header`. By default a cell shows `row[key]`; pass `cell` to render something else and `value` for the raw value used to sort and export. Mark the column that names each row with `rowHeader`: its cells become row headers (`<th scope="row">`) and its value labels each row's checkbox and actions menu ("Select Ana Silva", "Actions for Ana Silva"). Also `align` (`'end'` for numbers), `width`, and `hideBelow: 'md' | 'lg'` to drop less important columns on small screens.
+
+| Prop                                                     | Notes                                                                                                                                     |
+| -------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
+| `caption`                                                | Required: names the table for screen readers. `hideCaption` hides it visually                                                             |
+| `sortable` columns                                       | Press a header to sort; press again to reverse. The sorted header gets `aria-sort`                                                        |
+| `sort`, `defaultSort`, `onSortChange`                    | `{ key, direction: 'asc' \| 'desc' }`, controlled or not. Add `manualSort` when your server sorts the rows                                |
+| `selectable`                                             | A checkbox per row and a select-all checkbox (with a "some selected" state) for the rows passed in                                        |
+| `selectedIds`, `defaultSelectedIds`, `onSelectionChange` | Selected row ids, controlled or not. The count is announced to screen readers                                                             |
+| `bulkActions`                                            | `(ids, clear) => ReactNode`, shown above the table while rows are selected, with a Clear selection button                                 |
+| `rowActions`                                             | `(row) => MenuItem[]`: a DropdownMenu at the end of each row                                                                              |
+| `loading`, `loadingRows`                                 | Placeholder rows when there are no rows yet; `aria-busy` on the table                                                                     |
+| `empty`                                                  | Shown when there are no rows. Default "No results."                                                                                       |
+| `density`                                                | `'comfortable'` (default) or `'compact'`                                                                                                  |
+| `maxHeight`                                              | Limits the height and keeps the header visible while rows scroll                                                                          |
+| labels                                                   | `selectAllLabel`, `selectRowLabel`, `rowActionsLabel`, `selectedCountLabel`, `clearSelectionLabel`, `actionsHeaderLabel` for translations |
+
+Sorting puts numbers and dates in order by value and text in natural order ("Item 2" before "Item 10"), ignoring case; empty values always go last. `sortRows(rows, column, direction)` does the same outside the table.
+
+**Small screens.** The table scrolls sideways inside its own frame instead of widening the page, and the frame can be focused and scrolled with the arrow keys. Use `hideBelow` to keep it narrow on phones.
+
+### Pagination
+
+```tsx
+import { Pagination, paginate } from '@dawg-codes/react-toolkit/pagination';
+
+const current = paginate(filteredRows, page, 10); // { items, page, pageCount, from, to, total }
+
+<DataTable rows={current.items} … />
+<Pagination
+  page={current.page}
+  pageCount={current.pageCount}
+  onPageChange={setPage}
+  summary={`Showing ${current.from}–${current.to} of ${current.total}`}
+/>;
+```
+
+A `<nav aria-label="Pagination">` with Previous and Next, page numbers with gaps (1 … 4 5 6 … 20), and the current page marked with `aria-current="page"`. On phones the numbers give way to "Page 2 of 10". Pass ``getHref={(page) => `?page=${page}`}`` to render links instead of buttons, so pages can be bookmarked. Also takes `siblingCount`, and `label`, `previousLabel`, `nextLabel`, `pageLabel` and `compactLabel` for translations.
+
+### CSV
+
+Functions with no React and no dependencies.
+
+```ts
+import { downloadCsv, parseCsv, toCsv } from '@dawg-codes/react-toolkit/csv';
+import { tableToCsv } from '@dawg-codes/react-toolkit/table';
+
+downloadCsv(tableToCsv(filteredRows, columns), 'members'); // uses each column's value and header
+const csv = toCsv(rows, [{ header: 'Name', value: (r) => r.name }]);
+const table = parseCsv(fileText); // string[][]
+```
+
+- `toCsv` writes RFC 4180 CSV: values with commas, quotes or line breaks are quoted, dates become ISO text, and lines end with `\r\n`. Options: `delimiter` (e.g. `;`) and `newline`.
+- **Formula protection.** Text starting with `=`, `+`, `-`, `@`, a tab or a carriage return gets a leading `'`, so spreadsheet apps show it instead of running it as a formula (CSV injection). Numbers are left alone. Turn it off with `protectFormulas: false` only for files that never reach a spreadsheet.
+- `downloadCsv(csv, filename)` saves the file in the browser, with a byte order mark so Excel reads accented and non-Latin text correctly.
+- `parseCsv(text)` reads CSV back into rows of strings, including quoted values with line breaks. It doesn't convert or trust anything: validate the values as you would any user input.
+
 ## Browser support
 
 The styles need cascade layers, `color-mix()` and logical properties, which are supported in Chrome and Edge 111+, Firefox 113+ and Safari 16.2+ (all released in 2023). Browsers without cascade-layer support ignore the styles completely. `:has()` is used for the interactive card's focus ring, the focus ring around a whole form control (with its icon and buttons) and the selected radio card's border. Without it, the card's ring stays on the link, form controls fall back to `:focus-within`, and a selected radio card shows only its checked radio. TextArea's `autoGrow` needs CSS `field-sizing` (Chrome and Edge 123+); elsewhere the text area keeps its height and users can resize it. Dialog uses the native `<dialog>` element and `:modal`; the page-scroll lock behind it also uses `:has()`. Side-panel dialogs slide in from the correct edge in right-to-left pages using `:dir()`.
@@ -954,7 +1062,8 @@ Components render on the server: there is no `window` or `document` access durin
 
 - **Not published yet.** This is a pre-release workspace package.
 - **No icon set.** Pass your own SVG icons to `icon`, `startIcon` and similar props.
-- **Not included yet:** Tooltip, Tabs and Breadcrumbs; in forms, multiple select, combobox (autocomplete), date picker and file upload; submenus and checkable items in DropdownMenu; collapsible groups in SideNav.
+- **Not included yet:** Tooltip, Tabs and Breadcrumbs; in forms, multiple select, combobox (autocomplete), date picker and file upload; submenus and checkable items in DropdownMenu; collapsible groups in SideNav; column resizing, row virtualisation and a stacked phone layout in DataTable.
+- **DataTable sorts and selects the rows you pass in.** For server-side data, pass one page of rows, sort on the server (`manualSort`) and paginate there. Select-all selects the rows shown, not every row in your data.
 - **AppShell's breakpoints are fixed:** the sidebar becomes a column at 64rem and the tab bar hides at 48rem, because CSS media queries can't read custom properties.
 - **Toasts shown while a modal Dialog is open appear behind it** and can't be reached until it closes, because the browser makes everything outside the dialog inert. Show messages inside the dialog instead (for example with FormAlert).
 - **Menus and toasts are rendered where you put them, not in a portal**, so React stays the only dependency. They use fixed positioning, which breaks inside an ancestor with `transform`, `filter` or `contain`; put the ToastProvider near the root.
