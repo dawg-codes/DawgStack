@@ -20,7 +20,8 @@ body {
   outline: 2px solid var(--dawg-color-focus-ring);
   outline-offset: 2px;
 }
-a {
+/* Only links without a class: components style their own links (see the README's Styles section). */
+a:not([class]) {
   color: var(--dawg-color-primary);
 }
 
@@ -230,4 +231,53 @@ a {
 }
 .dawg-dialog__body p + p {
   margin-top: 0.75rem;
+}
+/* ---------- Layout demos ---------- */
+.pg-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--dawg-color-text);
+  font-weight: var(--dawg-font-weight-bold);
+  font-size: var(--dawg-font-size-lg);
+  text-decoration: none;
+}
+.pg-brand-mark {
+  width: 1.75rem;
+  height: 1.75rem;
+}
+.pg-brand-mark rect {
+  fill: var(--dawg-color-primary-solid);
+}
+.pg-brand-mark path {
+  fill: none;
+  stroke: var(--dawg-color-primary-on-solid);
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.pg-back {
+  font-size: var(--dawg-font-size-sm);
+}
+.pg-project-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 16rem), 1fr));
+  gap: 1rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.pg-auth-aside {
+  display: grid;
+  gap: 1rem;
+  max-width: 28rem;
+  font-size: var(--dawg-font-size-lg);
+}
+.pg-auth-aside p {
+  margin: 0;
+}
+.pg-auth-quote {
+  font-size: 1.75rem;
+  font-weight: var(--dawg-font-weight-bold);
+  line-height: var(--dawg-line-height-tight);
 }
