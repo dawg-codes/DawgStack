@@ -3,8 +3,6 @@ import {
   forwardRef,
   useCallback,
   useContext,
-  useEffect,
-  useLayoutEffect,
   useMemo,
   useState,
   useSyncExternalStore,
@@ -17,10 +15,10 @@ import {
   type ResolvedThemeMode,
   type ThemeMode,
 } from './define-theme';
+import { useBeforePaint } from '../../utils/use-before-paint';
 
-// Theme changes are applied before the browser paints, so a switch never shows a frame of the
-// old colours. On the server (no window) a plain effect is used, which React 18 doesn't warn about.
-const useBeforePaint = typeof window === 'undefined' ? useEffect : useLayoutEffect;
+// Theme changes are applied before the browser paints (useBeforePaint), so a switch never shows a
+// frame of the old colours. On the server a plain effect is used, which React 18 doesn't warn about.
 
 const DARK_QUERY = '(prefers-color-scheme: dark)';
 const isMode = (value: unknown): value is ThemeMode =>

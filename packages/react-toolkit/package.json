@@ -42,6 +42,9 @@
       "card": [
         "./dist/card.d.cts"
       ],
+      "dialog": [
+        "./dist/dialog.d.cts"
+      ],
       "divider": [
         "./dist/divider.d.cts"
       ],
@@ -50,6 +53,9 @@
       ],
       "form": [
         "./dist/form.d.cts"
+      ],
+      "menu": [
+        "./dist/menu.d.cts"
       ],
       "progress-bar": [
         "./dist/progress-bar.d.cts"
@@ -62,6 +68,9 @@
       ],
       "theme": [
         "./dist/theme.d.cts"
+      ],
+      "toast": [
+        "./dist/toast.d.cts"
       ],
       "visually-hidden": [
         "./dist/visually-hidden.d.cts"
@@ -119,6 +128,16 @@
         "default": "./dist/card.cjs"
       }
     },
+    "./dialog": {
+      "import": {
+        "types": "./dist/dialog.d.ts",
+        "default": "./dist/dialog.js"
+      },
+      "require": {
+        "types": "./dist/dialog.d.cts",
+        "default": "./dist/dialog.cjs"
+      }
+    },
     "./divider": {
       "import": {
         "types": "./dist/divider.d.ts",
@@ -147,6 +166,16 @@
       "require": {
         "types": "./dist/form.d.cts",
         "default": "./dist/form.cjs"
+      }
+    },
+    "./menu": {
+      "import": {
+        "types": "./dist/menu.d.ts",
+        "default": "./dist/menu.js"
+      },
+      "require": {
+        "types": "./dist/menu.d.cts",
+        "default": "./dist/menu.cjs"
       }
     },
     "./progress-bar": {
@@ -187,6 +216,16 @@
       "require": {
         "types": "./dist/theme.d.cts",
         "default": "./dist/theme.cjs"
+      }
+    },
+    "./toast": {
+      "import": {
+        "types": "./dist/toast.d.ts",
+        "default": "./dist/toast.js"
+      },
+      "require": {
+        "types": "./dist/toast.d.cts",
+        "default": "./dist/toast.cjs"
       }
     },
     "./visually-hidden": {

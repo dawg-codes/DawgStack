@@ -88,6 +88,8 @@
     --dawg-color-track: #e4e4e7;
     --dawg-color-skeleton: #e4e4e7;
     --dawg-color-skeleton-highlight: #f4f4f5;
+    /* Dims the page behind modal dialogs. */
+    --dawg-color-overlay: rgb(24 24 27 / 0.5);
 
     /* Each tone: base (text and graphics on surfaces), soft background, border,
        solid background, hover state of solid, and the text colour on solid. */
@@ -159,6 +161,7 @@
     --dawg-color-track: #27272a;
     --dawg-color-skeleton: #27272a;
     --dawg-color-skeleton-highlight: #3a3a40;
+    --dawg-color-overlay: rgb(0 0 0 / 0.7);
 
     --dawg-color-primary: #a5b4fc;
     --dawg-color-primary-soft: rgb(99 102 241 / 0.18);
@@ -226,6 +229,7 @@
       --dawg-color-track: #27272a;
       --dawg-color-skeleton: #27272a;
       --dawg-color-skeleton-highlight: #3a3a40;
+      --dawg-color-overlay: rgb(0 0 0 / 0.7);
 
       --dawg-color-primary: #a5b4fc;
       --dawg-color-primary-soft: rgb(99 102 241 / 0.18);
