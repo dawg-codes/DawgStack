@@ -4,7 +4,9 @@
 // DawgStack is public. Some words must never appear in it (names of private projects,
 // organisations or business domains). Listing those words here in plain text would itself
 // leak them, so this file stores only SHA-256 hashes of lowercase words. Every word in every
-// tracked file is hashed and compared against the list; matches are reported masked.
+// tracked file, and in every commit message and author name, is hashed and compared against
+// the list; matches are reported masked. Words joined in camelCase or PascalCase are also
+// checked one by one ("acmePortal" is checked as "acme" and "portal").
 //
 // To check a candidate word:  node -e "console.log(require('crypto').createHash('sha256').update('word').digest('hex'))"
 // To allow a line on purpose (rare, needs review): add the text  leak-guard-allow  to that line.
@@ -49,10 +51,21 @@ const isBlocked = (word) => {
 };
 const mask = (word) => `${word[0]}${'*'.repeat(Math.max(1, word.length - 1))}`;
 
+// "myAcmeApp" -> "my Acme App", "ACMEPortal" -> "ACME Portal".
+const splitCamel = (line) =>
+  line.replace(/([a-z0-9])([A-Z])/g, '$1 $2').replace(/([A-Z]+)([A-Z][a-z])/g, '$1 $2');
+const wordsOf = (line) =>
+  new Set([
+    ...(line.toLowerCase().match(/[a-z0-9]+/g) ?? []),
+    ...(splitCamel(line)
+      .toLowerCase()
+      .match(/[a-z0-9]+/g) ?? []),
+  ]);
+
 function scanText(text, onHit) {
   text.split(/\r?\n/).forEach((line, i) => {
     if (line.includes('leak-guard-allow')) return;
-    for (const word of line.toLowerCase().match(/[a-z0-9]+/g) ?? []) {
+    for (const word of wordsOf(line)) {
       if (isBlocked(word)) onHit(i + 1, `blocked term "${mask(word)}"`);
     }
     for (const { name, re } of BLOCKED_PATTERNS) {
@@ -84,6 +97,24 @@ for (const file of files) {
   scanText(readFileSync(file, 'utf8'), (line, what) => problems.push(`${file}:${line}: ${what}`));
 }
 
+// Commit messages and author details are public too. CI fetches the full history, so every
+// commit is checked there; locally, every commit you have is checked.
+let commits = 0;
+try {
+  const log = execFileSync('git', ['log', '--format=%h%x01%an%n%ae%n%cn%n%ce%n%B%x00'], {
+    encoding: 'utf8',
+    maxBuffer: 256 * 1024 * 1024,
+  });
+  for (const entry of log.split('\0')) {
+    const [sha, text] = entry.replace(/^\n/, '').split('\x01');
+    if (!sha || text === undefined) continue;
+    commits += 1;
+    scanText(text, (_, what) => problems.push(`commit ${sha} (message or author): ${what}`));
+  }
+} catch {
+  // Not a git checkout, or no commits yet: nothing to check.
+}
+
 if (problems.length) {
   console.error(
     `Leak guard: ${problems.length} problem(s) found. Remove these before committing:\n`,
@@ -91,4 +122,4 @@ if (problems.length) {
   for (const p of problems) console.error(`  ${p}`);
   process.exit(1);
 }
-console.log(`Leak guard: ${files.length} files checked, nothing blocked.`);
+console.log(`Leak guard: ${files.length} files and ${commits} commits checked, nothing blocked.`);

@@ -172,7 +172,7 @@ tooling/                  repository checks
 | `pnpm test`          | Unit, accessibility and colour-contrast tests (Vitest)                                   |
 | `pnpm build`         | Builds the library into `packages/react-toolkit/dist`                                    |
 | `pnpm check:package` | Checks the package's exports and types for every module system (publint, attw)           |
-| `pnpm leak-guard`    | Fails if a file contains a blocked term                                                  |
+| `pnpm leak-guard`    | Fails if a file, file name, commit message or commit author contains a blocked term      |
 | `pnpm playground`    | Runs the preview app                                                                     |
 | `pnpm starter`       | Runs the Starter template                                                                |
 
