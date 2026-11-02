@@ -77,3 +77,31 @@ export const ArchiveIcon = () => (
     <path d="M5 8v11a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V8M10 12h4" />
   </svg>
 );
+export const HomeIcon = () => (
+  <svg {...base}>
+    <path d="M4 11.5 12 5l8 6.5V20a1 1 0 0 1-1 1h-4.5v-6h-5v6H5a1 1 0 0 1-1-1v-8.5Z" />
+  </svg>
+);
+export const FolderIcon = () => (
+  <svg {...base}>
+    <path d="M3.5 7a2 2 0 0 1 2-2h4l2 2.5h7a2 2 0 0 1 2 2V17a2 2 0 0 1-2 2h-13a2 2 0 0 1-2-2V7Z" />
+  </svg>
+);
+export const CalendarIcon = () => (
+  <svg {...base}>
+    <rect x="3.5" y="5" width="17" height="15" rx="2" />
+    <path d="M3.5 10h17M8 3v4M16 3v4" />
+  </svg>
+);
+export const UsersIcon = () => (
+  <svg {...base}>
+    <circle cx="9" cy="8.5" r="3.5" />
+    <path d="M2.5 20a6.5 6.5 0 0 1 13 0M16 5.2a3.5 3.5 0 0 1 0 6.6M18 14.5a6.5 6.5 0 0 1 3.5 5.5" />
+  </svg>
+);
+export const SettingsIcon = () => (
+  <svg {...base}>
+    <circle cx="12" cy="12" r="3" />
+    <path d="M12 2.5v3M12 18.5v3M4.6 4.6l2.1 2.1M17.3 17.3l2.1 2.1M2.5 12h3M18.5 12h3M4.6 19.4l2.1-2.1M17.3 6.7l2.1-2.1" />
+  </svg>
+);

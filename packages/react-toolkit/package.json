@@ -54,6 +54,9 @@
       "form": [
         "./dist/form.d.cts"
       ],
+      "layout": [
+        "./dist/layout.d.cts"
+      ],
       "menu": [
         "./dist/menu.d.cts"
       ],
@@ -166,6 +169,16 @@
       "require": {
         "types": "./dist/form.d.cts",
         "default": "./dist/form.cjs"
+      }
+    },
+    "./layout": {
+      "import": {
+        "types": "./dist/layout.d.ts",
+        "default": "./dist/layout.js"
+      },
+      "require": {
+        "types": "./dist/layout.d.cts",
+        "default": "./dist/layout.cjs"
       }
     },
     "./menu": {

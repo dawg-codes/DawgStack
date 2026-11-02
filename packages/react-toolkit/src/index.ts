@@ -6,6 +6,7 @@ export * from './components/dialog';
 export * from './components/divider';
 export * from './components/empty-state';
 export * from './components/form';
+export * from './components/layout';
 export * from './components/menu';
 export * from './components/progress-bar';
 export * from './components/skeleton';

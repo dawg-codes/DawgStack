@@ -1,4 +1,4 @@
-import { useMemo, useState, type ReactNode } from 'react';
+import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import {
   Avatar,
   Badge,
@@ -37,6 +37,7 @@ import {
 } from '@dawg-codes/react-toolkit/theme';
 import { ToastProvider } from '@dawg-codes/react-toolkit/toast';
 import { FormsDemo } from './FormsDemo';
+import { AppShellDemo, LayoutLinks, SignInDemo, useHash } from './LayoutDemos';
 import { OverlaysDemo } from './OverlaysDemo';
 import {
   AlertIcon,
@@ -156,6 +157,15 @@ export function App() {
     SHAPES.map((s) => s.value),
   );
   // Theme modules combine: one accent preset plus one shape preset.
+  const hash = useHash();
+  // Start each demo page at the top (but keep links to sections such as #buttons working).
+  const page = hash.startsWith('#/') ? hash.split('/')[1] : 'playground';
+  const shownPage = useRef(page);
+  useEffect(() => {
+    if (page === shownPage.current) return;
+    shownPage.current = page;
+    window.scrollTo(0, 0);
+  }, [page]);
   const theme = useMemo(
     () => mergeThemes(accentPresets[accent], shapePresets[shape]),
     [accent, shape],
@@ -163,26 +173,32 @@ export function App() {
   return (
     <ThemeProvider theme={theme}>
       <ToastProvider>
-        <Playground
-          customise={
-            <div className="pg-customise">
-              <ChoiceGroup
-                legend="Accent"
-                name="accent"
-                value={accent}
-                options={ACCENTS}
-                onChange={setAccent}
-              />
-              <ChoiceGroup
-                legend="Corners"
-                name="shape"
-                value={shape}
-                options={SHAPES}
-                onChange={setShape}
-              />
-            </div>
-          }
-        />
+        {hash.startsWith('#/app') ? (
+          <AppShellDemo hash={hash} />
+        ) : hash === '#/sign-in' ? (
+          <SignInDemo />
+        ) : (
+          <Playground
+            customise={
+              <div className="pg-customise">
+                <ChoiceGroup
+                  legend="Accent"
+                  name="accent"
+                  value={accent}
+                  options={ACCENTS}
+                  onChange={setAccent}
+                />
+                <ChoiceGroup
+                  legend="Corners"
+                  name="shape"
+                  value={shape}
+                  options={SHAPES}
+                  onChange={setShape}
+                />
+              </div>
+            }
+          />
+        )}
       </ToastProvider>
     </ThemeProvider>
   );
@@ -271,6 +287,15 @@ function Playground({ customise }: { customise: ReactNode }) {
 
         <Section id="forms" title="Form controls">
           <FormsDemo />
+        </Section>
+
+        <Section id="layouts" title="App layout">
+          <p className="pg-muted">
+            AppShell, AppHeader, SideNav, MobileTabBar, PageHeader and AuthLayout are full-page
+            layouts, so they have demo pages of their own. Resize the window to see the sidebar turn
+            into a drawer and the tab bar appear on phones.
+          </p>
+          <LayoutLinks />
         </Section>
 
         <Section id="overlays" title="Dialogs, toasts and menus">

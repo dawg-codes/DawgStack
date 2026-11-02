@@ -21,6 +21,31 @@
   .dawg-dialog[data-size='lg'] {
     --_width: 48rem;
   }
+  /* Side panels: full height against the start or end edge. */
+  .dawg-dialog:is([data-placement='start'], [data-placement='end']) {
+    --_width: 24rem;
+    width: min(var(--_width), calc(100% - 3rem));
+    height: 100dvh;
+    max-height: 100dvh;
+    margin-block: 0;
+    border-block: 0;
+    border-radius: 0;
+  }
+  .dawg-dialog:is([data-placement='start'], [data-placement='end'])[data-size='sm'] {
+    --_width: 20rem;
+  }
+  .dawg-dialog:is([data-placement='start'], [data-placement='end'])[data-size='lg'] {
+    --_width: 32rem;
+  }
+  .dawg-dialog[data-placement='start'] {
+    margin-inline: 0 auto;
+    border-inline-start: 0;
+  }
+  .dawg-dialog[data-placement='end'] {
+    margin-inline: auto 0;
+    border-inline-end: 0;
+  }
+
   /* Display only while open: the browser's own rule hides a closed dialog. */
   .dawg-dialog[open] {
     display: flex;
@@ -31,6 +56,19 @@
   @media (prefers-reduced-motion: no-preference) {
     .dawg-dialog[open] {
       animation: dawg-dialog-in var(--dawg-duration-normal) var(--dawg-easing-emphasized);
+    }
+    .dawg-dialog[open]:is([data-placement='start'], [data-placement='end']) {
+      animation-name: dawg-sheet-in;
+    }
+    .dawg-dialog[data-placement='start'] {
+      --_from: -100%;
+    }
+    .dawg-dialog[data-placement='end'],
+    .dawg-dialog[data-placement='start']:dir(rtl) {
+      --_from: 100%;
+    }
+    .dawg-dialog[data-placement='end']:dir(rtl) {
+      --_from: -100%;
     }
     .dawg-dialog[open]::backdrop {
       animation: dawg-backdrop-in var(--dawg-duration-normal) var(--dawg-easing-standard);
@@ -155,6 +193,11 @@
   from {
     opacity: 0;
     transform: translateY(0.5rem) scale(0.98);
+  }
+}
+@keyframes dawg-sheet-in {
+  from {
+    transform: translateX(var(--_from, -100%));
   }
 }
 @keyframes dawg-backdrop-in {

@@ -12,12 +12,12 @@ DawgStack is an open-source React toolkit by Dawg Codes: reusable UI components,
 
 ## Features
 
-- **Accessible components.** Buttons, cards, badges, avatars, loading states, form controls, dialogs, toasts, menus and more. They use semantic HTML and correct ARIA, work with the keyboard, and are tested with axe-core.
+- **Accessible components.** Buttons, cards, badges, avatars, loading states, form controls, dialogs, toasts, menus, app layouts and more. They use semantic HTML and correct ARIA, work with the keyboard, and are tested with axe-core.
 - **Themes users can switch.** A ready-made toggle for light, dark or follow-the-system. The choice is saved, follows the OS live, stays in sync across tabs, and never flashes the wrong theme on load.
 - **Modular styling.** Mix and match accent presets (indigo, teal, pink, graphite) with shape presets (sharp, default, round), define your own typed theme, or give one part of a page its own theme.
 - **Boilerplate templates.** Complete apps you copy and own. Use one as it is, or change a few clearly marked files: name, navigation, theme and where the data comes from.
 - **Take only what you need.** Import all styles, just the components you use, or none and style everything yourself. Every component also has its own JavaScript entry point.
-- **Customise without forking.** 114 tokens (92 design tokens and 22 per-component hooks), all in CSS cascade layers, so your own CSS always wins without `!important`.
+- **Customise without forking.** 119 tokens (92 design tokens and 27 per-component hooks), all in CSS cascade layers, so your own CSS always wins without `!important`.
 - **Contrast you can trust.** Every colour pair in both themes and in every preset is tested against WCAG AA. Reduced motion, Windows High Contrast and right-to-left progress bars are handled.
 - **Works anywhere.** React 18 and 19, ESM and CommonJS, TypeScript types, server rendering and React Server Components. React is the only peer dependency, and there are no runtime dependencies.
 
@@ -64,6 +64,10 @@ export function App() {
 
 ![A sign-up form showing errors, and form controls in dark mode](docs/screenshots/forms.png)
 
+**App layout**: a header, a sidebar that becomes a drawer on smaller screens, a page header, and a tab bar on phones.
+
+![The app layout demo on a computer in light mode and on a phone in dark mode](docs/screenshots/layout.png)
+
 **Dialogs, toasts and menus**: a modal dialog with a form, and in dark mode an actions menu and toasts.
 
 ![A dialog in light mode, and a dropdown menu with toasts in dark mode](docs/screenshots/overlays.png)
@@ -95,6 +99,7 @@ The [`@dawg-codes/react-toolkit`](packages/react-toolkit) package provides:
 | Dialog, ConfirmDialog | Modal dialogs on the native `<dialog>`, and confirmations               |
 | Toasts                | Brief messages that pause on hover and focus, with optional actions     |
 | DropdownMenu          | An actions menu with full keyboard support that never gets clipped      |
+| App layout            | AppShell, AppHeader, SideNav, MobileTabBar, PageHeader and AuthLayout   |
 | VisuallyHidden        | Text for screen readers only                                            |
 | Theme tools           | ThemeProvider, ThemeToggle, ThemeScope, presets and typed custom themes |
 
@@ -120,7 +125,7 @@ Each template keeps the things you're most likely to change in a few obvious fil
 | Admin dashboard              | App layout with side navigation, overview and settings                                    | Planned   |
 | User management              | Searchable, sortable user table with bulk actions                                         | Planned   |
 
-The planned templates need components that are still being built: app layout and a data table. The form controls, dialogs, toasts and menus they use are ready.
+The planned templates need one more component group, a data table. The form controls, dialogs, toasts, menus and app layouts they use are ready.
 
 ```bash
 pnpm starter                                                   # run it inside this repository
@@ -138,7 +143,7 @@ pnpm install
 pnpm playground        # builds the library and opens a preview at http://localhost:5173
 ```
 
-The playground shows every component, with live controls for the mode, accent and corner presets.
+The playground shows every component, with live controls for the mode, accent and corner presets, plus full-page demos of the app layout and a sign-in page.
 
 ## Repository layout
 

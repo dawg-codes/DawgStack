@@ -1,0 +1,507 @@
+@layer dawg.components {
+  /* ---------- AppShell ---------- */
+  .dawg-app {
+    --_header-h: var(--dawg-app-header-height, 3.5rem);
+    --_sidebar-w: var(--dawg-sidebar-width, 16rem);
+    --_pad: var(--dawg-app-padding, clamp(1rem, 3vw, 2rem));
+    --_tab-bar-h: 4rem;
+    display: flex;
+    flex-direction: column;
+    min-height: 100dvh;
+    background: var(--dawg-color-bg);
+    color: var(--dawg-color-text);
+    font-family: var(--dawg-font-family, inherit);
+  }
+  .dawg-app__skip {
+    position: absolute;
+    top: 0;
+    inset-inline-start: var(--dawg-space-3);
+    z-index: 100;
+    padding: var(--dawg-space-2) var(--dawg-space-4);
+    border-radius: 0 0 var(--dawg-radius-md) var(--dawg-radius-md);
+    background: var(--dawg-color-primary-solid);
+    color: var(--dawg-color-primary-on-solid);
+    font-size: var(--dawg-font-size-sm);
+    font-weight: var(--dawg-font-weight-semibold);
+    text-decoration: none;
+    transform: translateY(-110%);
+  }
+  .dawg-app__skip:focus {
+    transform: none;
+    outline: var(--dawg-focus-ring-width) solid var(--dawg-color-focus-ring);
+    outline-offset: var(--dawg-focus-ring-offset);
+  }
+  .dawg-app__body {
+    display: flex;
+    flex: 1;
+    min-height: 0;
+  }
+  .dawg-app__sidebar {
+    display: none;
+  }
+  @media (min-width: 64rem) {
+    .dawg-app__sidebar {
+      position: sticky;
+      top: var(--_header-h);
+      display: flex;
+      flex: none;
+      flex-direction: column;
+      box-sizing: border-box;
+      width: var(--_sidebar-w);
+      height: calc(100dvh - var(--_header-h));
+      overflow-y: auto;
+      border-inline-end: 1px solid var(--dawg-color-border);
+      background: var(--dawg-color-surface);
+      overscroll-behavior: contain;
+    }
+    .dawg-app:not(:has(.dawg-app-header)) .dawg-app__sidebar {
+      top: 0;
+      height: 100dvh;
+    }
+  }
+  .dawg-app__main {
+    flex: 1;
+    box-sizing: border-box;
+    min-width: 0;
+    padding: var(--_pad);
+  }
+  .dawg-app__main:focus {
+    outline: none;
+  }
+  /* Room for the phone tab bar, including the home indicator area. */
+  @media (max-width: 47.99rem) {
+    .dawg-app[data-has-tab-bar] .dawg-app__main {
+      padding-bottom: calc(var(--_pad) + var(--_tab-bar-h) + env(safe-area-inset-bottom, 0px));
+    }
+  }
+  /* The drawer reuses Dialog; its sidebar fills the panel edge to edge. */
+  .dawg-app__drawer .dawg-dialog__body {
+    margin-top: var(--dawg-space-3);
+    padding: 0;
+  }
+  .dawg-app__drawer .dawg-dialog__panel > :last-child {
+    padding-bottom: 0;
+  }
+
+  /* ---------- AppHeader ---------- */
+  .dawg-app-header {
+    position: sticky;
+    top: 0;
+    z-index: var(--dawg-app-header-z, 50);
+    display: flex;
+    align-items: center;
+    gap: var(--dawg-space-3);
+    box-sizing: border-box;
+    min-height: var(--_header-h, 3.5rem);
+    padding: var(--dawg-space-2) var(--_pad, 1rem);
+    border-bottom: 1px solid var(--dawg-color-border);
+    background: var(--dawg-color-surface);
+    color: var(--dawg-color-text);
+    font-family: var(--dawg-font-family, inherit);
+  }
+  .dawg-app-header__menu {
+    display: inline-flex;
+    flex: none;
+    align-items: center;
+    justify-content: center;
+    width: var(--dawg-control-height-md);
+    height: var(--dawg-control-height-md);
+    margin-inline-start: calc(-1 * var(--dawg-space-2));
+    padding: 0;
+    border: 0;
+    border-radius: var(--dawg-radius-md);
+    background: transparent;
+    color: var(--dawg-color-text);
+    cursor: pointer;
+  }
+  .dawg-app-header__menu svg {
+    width: 1.375rem;
+    height: 1.375rem;
+  }
+  @media (hover: hover) {
+    .dawg-app-header__menu:hover {
+      background: var(--dawg-color-surface-muted);
+    }
+  }
+  .dawg-app-header__menu:focus-visible {
+    outline: var(--dawg-focus-ring-width) solid var(--dawg-color-focus-ring);
+    outline-offset: 0;
+  }
+  @media (pointer: coarse) {
+    .dawg-app-header__menu {
+      width: var(--dawg-touch-target);
+      height: var(--dawg-touch-target);
+    }
+  }
+  @media (min-width: 64rem) {
+    .dawg-app-header__menu {
+      display: none;
+    }
+  }
+  .dawg-app-header__brand {
+    display: flex;
+    flex: none;
+    align-items: center;
+    min-width: 0;
+    font-weight: var(--dawg-font-weight-bold);
+  }
+  .dawg-app-header__content {
+    display: flex;
+    flex: 1;
+    align-items: center;
+    gap: var(--dawg-space-2);
+    min-width: 0;
+  }
+  .dawg-app-header__actions {
+    display: flex;
+    flex: none;
+    align-items: center;
+    gap: var(--dawg-space-2);
+    margin-inline-start: auto;
+  }
+  .dawg-app-header__content + .dawg-app-header__actions {
+    margin-inline-start: 0;
+  }
+
+  /* ---------- SideNav ---------- */
+  .dawg-side-nav {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: var(--dawg-space-4);
+    box-sizing: border-box;
+    min-height: 0;
+    padding: var(--dawg-space-4) var(--dawg-space-3);
+    color: var(--dawg-color-text);
+    font-family: var(--dawg-font-family, inherit);
+    font-size: var(--dawg-font-size-sm);
+  }
+  .dawg-side-nav__groups {
+    display: grid;
+    flex: 1;
+    align-content: start;
+    gap: var(--dawg-space-5);
+  }
+  .dawg-side-nav__heading {
+    margin: 0 0 var(--dawg-space-1);
+    padding: 0 var(--dawg-space-3);
+    color: var(--dawg-color-text-muted);
+    font-size: var(--dawg-font-size-xs);
+    font-weight: var(--dawg-font-weight-semibold);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+  .dawg-side-nav__list {
+    display: grid;
+    gap: 2px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .dawg-side-nav__link {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: var(--dawg-space-3);
+    box-sizing: border-box;
+    min-height: var(--dawg-control-height-md);
+    padding: var(--dawg-space-2) var(--dawg-space-3);
+    border-radius: var(--dawg-radius-md);
+    color: var(--dawg-color-text-muted);
+    font-weight: var(--dawg-font-weight-medium);
+    line-height: var(--dawg-line-height-tight);
+    text-decoration: none;
+  }
+  @media (pointer: coarse) {
+    .dawg-side-nav__link {
+      min-height: var(--dawg-touch-target);
+    }
+  }
+  @media (hover: hover) {
+    .dawg-side-nav__link:hover {
+      background: var(--dawg-color-surface-muted);
+      color: var(--dawg-color-text);
+    }
+  }
+  .dawg-side-nav__link:focus-visible {
+    outline: var(--dawg-focus-ring-width) solid var(--dawg-color-focus-ring);
+    outline-offset: -2px;
+  }
+  /* Current page: tinted background, accent text and a bar at the start edge (not colour alone). */
+  .dawg-side-nav__link[aria-current='page'] {
+    background: var(--dawg-color-primary-soft);
+    color: var(--dawg-color-primary);
+    font-weight: var(--dawg-font-weight-semibold);
+  }
+  .dawg-side-nav__link[aria-current='page']::before {
+    content: '';
+    position: absolute;
+    inset-block: 0.5rem;
+    inset-inline-start: 0;
+    width: 3px;
+    border-radius: var(--dawg-radius-full);
+    background: currentColor;
+  }
+  .dawg-side-nav__icon {
+    display: inline-flex;
+    flex: none;
+  }
+  .dawg-side-nav__icon svg {
+    width: 1.125rem;
+    height: 1.125rem;
+  }
+  .dawg-side-nav__label {
+    flex: 1;
+    min-width: 0;
+    overflow-wrap: anywhere;
+  }
+  .dawg-side-nav__badge {
+    flex: none;
+    min-width: 1.25rem;
+    padding: 0.125rem 0.375rem;
+    border-radius: var(--dawg-radius-full);
+    background: var(--dawg-color-surface-strong);
+    color: var(--dawg-color-text);
+    font-size: var(--dawg-font-size-xs);
+    font-weight: var(--dawg-font-weight-semibold);
+    text-align: center;
+  }
+  .dawg-side-nav__header,
+  .dawg-side-nav__footer {
+    padding: 0 var(--dawg-space-3);
+  }
+  .dawg-side-nav__footer {
+    padding-top: var(--dawg-space-4);
+    border-top: 1px solid var(--dawg-color-border);
+  }
+
+  /* ---------- MobileTabBar ---------- */
+  .dawg-tab-bar {
+    position: fixed;
+    inset-inline: 0;
+    bottom: 0;
+    z-index: var(--dawg-app-header-z, 50);
+    box-sizing: border-box;
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+    border-top: 1px solid var(--dawg-color-border);
+    background: var(--dawg-color-surface);
+    font-family: var(--dawg-font-family, inherit);
+  }
+  @media (min-width: 48rem) {
+    .dawg-tab-bar {
+      display: none;
+    }
+  }
+  .dawg-tab-bar__list {
+    display: flex;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .dawg-tab-bar__list > li {
+    display: flex;
+    flex: 1;
+    min-width: 0;
+  }
+  .dawg-tab-bar__link {
+    position: relative;
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.125rem;
+    min-width: 0;
+    min-height: 4rem;
+    padding: var(--dawg-space-1);
+    color: var(--dawg-color-text-muted);
+    font-size: var(--dawg-font-size-xs);
+    font-weight: var(--dawg-font-weight-medium);
+    text-decoration: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .dawg-tab-bar__link:focus-visible {
+    outline: var(--dawg-focus-ring-width) solid var(--dawg-color-focus-ring);
+    outline-offset: -4px;
+    border-radius: var(--dawg-radius-md);
+  }
+  .dawg-tab-bar__link[aria-current='page'] {
+    color: var(--dawg-color-primary);
+    font-weight: var(--dawg-font-weight-semibold);
+  }
+  /* Current tab: a pill behind the icon, so it isn't shown by colour alone. */
+  .dawg-tab-bar__icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 3.5rem;
+    height: 1.875rem;
+    border-radius: var(--dawg-radius-full);
+  }
+  .dawg-tab-bar__link[aria-current='page'] .dawg-tab-bar__icon {
+    background: var(--dawg-color-primary-soft);
+  }
+  .dawg-tab-bar__icon svg {
+    width: 1.375rem;
+    height: 1.375rem;
+  }
+  .dawg-tab-bar__badge {
+    position: absolute;
+    top: 0.5rem;
+    inset-inline-start: calc(50% + 0.5rem);
+    min-width: 1rem;
+    padding: 0 0.25rem;
+    border-radius: var(--dawg-radius-full);
+    background: var(--dawg-color-danger-solid);
+    color: var(--dawg-color-danger-on-solid);
+    font-size: 0.6875rem;
+    font-weight: var(--dawg-font-weight-bold);
+    line-height: 1rem;
+    text-align: center;
+  }
+  .dawg-tab-bar__label {
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  /* ---------- PageHeader ---------- */
+  .dawg-page-header {
+    display: grid;
+    gap: var(--dawg-space-2);
+    margin-bottom: var(--dawg-space-6);
+    font-family: var(--dawg-font-family, inherit);
+  }
+  .dawg-page-header__eyebrow {
+    color: var(--dawg-color-text-muted);
+    font-size: var(--dawg-font-size-sm);
+  }
+  .dawg-page-header__row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: var(--dawg-space-3) var(--dawg-space-6);
+  }
+  .dawg-page-header__text {
+    display: grid;
+    flex: 1 1 20rem;
+    gap: var(--dawg-space-1);
+    min-width: 0;
+  }
+  .dawg-page-header__title {
+    margin: 0;
+    color: var(--dawg-color-text);
+    font-size: clamp(1.5rem, 1.25rem + 1vw, 2rem);
+    font-weight: var(--dawg-font-weight-bold);
+    line-height: var(--dawg-line-height-tight);
+    overflow-wrap: anywhere;
+  }
+  .dawg-page-header__description {
+    margin: 0;
+    color: var(--dawg-color-text-muted);
+    line-height: var(--dawg-line-height-normal);
+  }
+  .dawg-page-header__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--dawg-space-2);
+  }
+
+  /* ---------- AuthLayout ---------- */
+  .dawg-auth {
+    position: relative;
+    display: grid;
+    min-height: 100dvh;
+    background: var(--dawg-color-bg);
+    color: var(--dawg-color-text);
+    font-family: var(--dawg-font-family, inherit);
+  }
+  .dawg-auth__actions {
+    position: absolute;
+    top: var(--dawg-space-4);
+    inset-inline-end: var(--dawg-space-4);
+    z-index: 1;
+    display: flex;
+    gap: var(--dawg-space-2);
+  }
+  .dawg-auth__main {
+    display: grid;
+    place-items: center;
+    box-sizing: border-box;
+    padding: calc(var(--dawg-space-12) + var(--dawg-space-4)) var(--dawg-space-4)
+      var(--dawg-space-10);
+  }
+  .dawg-auth__panel {
+    display: grid;
+    gap: var(--dawg-space-6);
+    box-sizing: border-box;
+    width: 100%;
+    max-width: var(--dawg-auth-width, 26rem);
+  }
+  @media (min-width: 30rem) {
+    .dawg-auth__panel {
+      padding: var(--dawg-space-8);
+      border: 1px solid var(--dawg-color-border);
+      border-radius: var(--dawg-radius-xl);
+      background: var(--dawg-color-surface);
+      box-shadow: var(--dawg-shadow-sm);
+    }
+  }
+  .dawg-auth__brand {
+    display: flex;
+    align-items: center;
+    gap: var(--dawg-space-2);
+    font-weight: var(--dawg-font-weight-bold);
+  }
+  .dawg-auth__heading {
+    display: grid;
+    gap: var(--dawg-space-1);
+  }
+  .dawg-auth__title {
+    margin: 0;
+    font-size: clamp(1.375rem, 1.2rem + 0.75vw, 1.75rem);
+    font-weight: var(--dawg-font-weight-bold);
+    line-height: var(--dawg-line-height-tight);
+  }
+  .dawg-auth__description {
+    margin: 0;
+    color: var(--dawg-color-text-muted);
+    font-size: var(--dawg-font-size-sm);
+    line-height: var(--dawg-line-height-normal);
+  }
+  .dawg-auth__footer {
+    color: var(--dawg-color-text-muted);
+    font-size: var(--dawg-font-size-sm);
+    text-align: center;
+  }
+  .dawg-auth__aside {
+    display: none;
+  }
+  @media (min-width: 64rem) {
+    .dawg-auth[data-has-aside] {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    }
+    .dawg-auth__aside {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      box-sizing: border-box;
+      padding: var(--dawg-space-12);
+      background: var(--dawg-color-primary-solid);
+      color: var(--dawg-color-primary-on-solid);
+    }
+    .dawg-auth[data-has-aside] .dawg-auth__actions {
+      inset-inline-end: calc(50% + var(--dawg-space-4));
+    }
+  }
+
+  @media (forced-colors: active) {
+    .dawg-side-nav__link[aria-current='page'],
+    .dawg-tab-bar__link[aria-current='page'] {
+      outline: 2px solid Highlight;
+      outline-offset: -2px;
+    }
+  }
+}

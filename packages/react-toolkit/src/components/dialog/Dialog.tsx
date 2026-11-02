@@ -15,6 +15,7 @@ import { useBeforePaint } from '../../utils/use-before-paint';
 import { useMergedRef } from '../../utils/use-merged-ref';
 
 export type DialogSize = 'sm' | 'md' | 'lg';
+export type DialogPlacement = 'center' | 'start' | 'end';
 
 export interface DialogProps extends Omit<
   DialogHTMLAttributes<HTMLDialogElement>,
@@ -51,6 +52,11 @@ export interface DialogProps extends Omit<
   initialFocus?: RefObject<HTMLElement | null>;
   /** `alertdialog` for urgent questions that need an answer, such as confirmations. */
   role?: 'dialog' | 'alertdialog';
+  /**
+   * `center` (default), or a full-height panel that slides in from the `start` or `end` edge
+   * (left or right; flipped in right-to-left pages), e.g. for navigation or filters.
+   */
+  placement?: DialogPlacement;
 }
 
 const CloseIcon = () => (
@@ -80,6 +86,7 @@ export const Dialog = forwardRef<HTMLDialogElement, DialogProps>(function Dialog
     description,
     footer,
     size = 'md',
+    placement = 'center',
     dismissible = true,
     closeLabel = 'Close',
     hideCloseButton = false,
@@ -171,6 +178,7 @@ export const Dialog = forwardRef<HTMLDialogElement, DialogProps>(function Dialog
       role={role === 'alertdialog' ? 'alertdialog' : undefined}
       className={cx('dawg-dialog', className)}
       data-size={size}
+      data-placement={placement}
       aria-labelledby={titleId}
       aria-describedby={descriptionId}
       onCancel={handleCancel}

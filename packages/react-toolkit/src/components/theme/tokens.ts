@@ -102,6 +102,10 @@ export const DESIGN_TOKENS = [
  * design token when a hook is unset, so setting one changes just that component.
  */
 export const COMPONENT_TOKENS = [
+  'app-header-height',
+  'app-header-z',
+  'app-padding',
+  'auth-width',
   'avatar-bg',
   'avatar-color',
   'avatar-size',
@@ -119,6 +123,7 @@ export const COMPONENT_TOKENS = [
   'menu-z',
   'progress-fill',
   'progress-track',
+  'sidebar-width',
   'skeleton-radius',
   'spinner-color',
   'spinner-size',
