@@ -74,4 +74,4 @@ tooling/                  repository checks
 
 ## License
 
-No license has been chosen yet. A license will be added before the first release.
+[MIT](LICENSE) © 2026 Dawg Codes

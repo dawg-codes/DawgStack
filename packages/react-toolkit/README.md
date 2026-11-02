@@ -442,3 +442,7 @@ Components render on the server: there is no `window` or `document` access durin
 - **Card's `as` is limited to non-interactive elements**, by design. Use the stretched-link pattern for clickable cards.
 - **Avatar initials come from the first and last words of the name** and may not suit every naming convention. Pass `alt` and a custom `fallback`, or render your own initials, if needed.
 - **Right-to-left layouts are only partly tested.** ProgressBar has been checked in a right-to-left page; the other components use logical properties in most places but have not been tested in RTL yet.
+
+## License
+
+[MIT](LICENSE) © 2026 Dawg Codes

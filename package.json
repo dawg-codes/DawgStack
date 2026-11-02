@@ -2,6 +2,7 @@
   "name": "dawgstack",
   "private": true,
   "description": "DawgStack monorepo: reusable React components, design tokens and developer utilities.",
+  "license": "MIT",
   "type": "module",
   "packageManager": "pnpm@10.28.0",
   "engines": {

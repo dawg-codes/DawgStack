@@ -13,6 +13,7 @@ const root = fileURLToPath(new URL('..', import.meta.url));
 const pkg = JSON.parse(readFileSync(`${root}/package.json`, 'utf8')) as {
   exports: Record<string, unknown>;
   typesVersions: Record<string, unknown>;
+  license: string;
   peerDependencies: Record<string, string>;
   dependencies?: Record<string, string>;
 };
@@ -29,6 +30,14 @@ describe('package entry points', () => {
     for (const name of components) {
       expect(index).toContain(`'./components/${name}'`);
     }
+  });
+
+  it('is MIT licensed, with the same LICENSE file as the repository root', () => {
+    // npm only ships a LICENSE from the package folder, so the package keeps its own copy.
+    expect(pkg.license).toBe('MIT');
+    const own = readFileSync(`${root}/LICENSE`, 'utf8');
+    expect(own).toBe(readFileSync(`${root}/../../LICENSE`, 'utf8'));
+    expect(own).toMatch(/^MIT License\n\nCopyright \(c\) \d{4} Dawg Codes\n/);
   });
 
   it('has React as its only peer dependency and no runtime dependencies', () => {

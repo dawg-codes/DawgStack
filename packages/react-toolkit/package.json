@@ -3,6 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "description": "Accessible, themeable React components and design tokens from DawgStack.",
+  "license": "MIT",
   "keywords": [
     "react",
     "components",
