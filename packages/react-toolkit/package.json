@@ -48,6 +48,9 @@
       "empty-state": [
         "./dist/empty-state.d.cts"
       ],
+      "form": [
+        "./dist/form.d.cts"
+      ],
       "progress-bar": [
         "./dist/progress-bar.d.cts"
       ],
@@ -134,6 +137,16 @@
       "require": {
         "types": "./dist/empty-state.d.cts",
         "default": "./dist/empty-state.cjs"
+      }
+    },
+    "./form": {
+      "import": {
+        "types": "./dist/form.d.ts",
+        "default": "./dist/form.js"
+      },
+      "require": {
+        "types": "./dist/form.d.cts",
+        "default": "./dist/form.cjs"
       }
     },
     "./progress-bar": {

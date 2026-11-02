@@ -47,3 +47,9 @@ export const SlidersIcon = () => (
     <path d="M4 7h10M18 7h2M4 17h4M12 17h8M16 5v4M10 15v4" />
   </svg>
 );
+export const MailIcon = () => (
+  <svg {...base}>
+    <rect x="3" y="5" width="18" height="14" rx="2" />
+    <path d="M3.5 6.5 12 13l8.5-6.5" />
+  </svg>
+);

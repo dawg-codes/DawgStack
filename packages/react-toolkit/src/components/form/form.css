@@ -1,0 +1,654 @@
+@layer dawg.components {
+  /* ---------- Field layout: label, control, hint, error ---------- */
+  .dawg-field {
+    --_h: var(--dawg-control-height-md);
+    --_px: var(--dawg-space-3);
+    --_fs: var(--dawg-font-size-md);
+    --_radius: var(--dawg-input-radius, var(--dawg-radius-md));
+    display: grid;
+    gap: var(--dawg-space-2);
+    min-width: 0;
+    color: var(--dawg-color-text);
+    font-family: var(--dawg-font-family, inherit);
+  }
+  .dawg-field[data-size='sm'] {
+    --_h: var(--dawg-control-height-sm);
+    --_px: var(--dawg-space-2);
+    --_fs: var(--dawg-font-size-sm);
+  }
+  .dawg-field[data-size='lg'] {
+    --_h: var(--dawg-control-height-lg);
+    --_px: var(--dawg-space-4);
+  }
+  /* Bigger targets for fingers, and 16px text so iOS doesn't zoom into the field. */
+  @media (pointer: coarse) {
+    .dawg-field[data-size='sm'] {
+      --_h: var(--dawg-control-height-md);
+      --_fs: var(--dawg-font-size-md);
+    }
+    .dawg-field[data-size='md'] {
+      --_h: var(--dawg-touch-target);
+    }
+  }
+
+  .dawg-field__label {
+    justify-self: start;
+    padding: 0;
+    color: var(--dawg-color-text);
+    font-size: var(--dawg-font-size-sm);
+    font-weight: var(--dawg-font-weight-medium);
+    line-height: var(--dawg-line-height-tight);
+  }
+  .dawg-field__required {
+    margin-inline-start: 0.125em;
+    color: var(--dawg-color-danger);
+  }
+  .dawg-field__hint {
+    margin: 0;
+    color: var(--dawg-color-text-muted);
+    font-size: var(--dawg-font-size-sm);
+    line-height: var(--dawg-line-height-normal);
+  }
+  .dawg-field__error {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--dawg-space-1);
+    margin: 0;
+    color: var(--dawg-color-danger);
+    font-size: var(--dawg-font-size-sm);
+    font-weight: var(--dawg-font-weight-medium);
+    line-height: var(--dawg-line-height-normal);
+  }
+  .dawg-field__error svg {
+    flex: none;
+    width: 1.15em;
+    height: 1.15em;
+    margin-top: 0.175em;
+  }
+
+  /* ---------- The bordered control ---------- */
+  .dawg-field__control {
+    position: relative;
+    display: flex;
+    align-items: center;
+    box-sizing: border-box;
+    min-width: 0;
+    min-height: var(--_h);
+    border: 1px solid var(--dawg-color-border-input);
+    border-radius: var(--_radius);
+    background: var(--dawg-input-bg, var(--dawg-color-surface));
+    color: var(--dawg-color-text);
+    transition: border-color var(--dawg-duration-fast) var(--dawg-easing-standard);
+  }
+  .dawg-field__control[data-multiline] {
+    align-items: stretch;
+  }
+  @media (hover: hover) {
+    .dawg-field:not([data-disabled], [data-invalid]) .dawg-field__control:hover {
+      border-color: var(--dawg-color-text-subtle);
+    }
+  }
+  .dawg-field[data-invalid] .dawg-field__control {
+    border-color: var(--dawg-color-danger);
+  }
+  /* The ring goes on the whole box (icon and buttons included), not just the text area. */
+  .dawg-field__control:has(.dawg-field__input:focus-visible) {
+    outline: var(--dawg-focus-ring-width) solid var(--dawg-color-focus-ring);
+    outline-offset: -1px;
+  }
+  @supports not selector(:has(*)) {
+    .dawg-field__control:focus-within {
+      outline: var(--dawg-focus-ring-width) solid var(--dawg-color-focus-ring);
+      outline-offset: -1px;
+    }
+  }
+  .dawg-field[data-disabled] .dawg-field__control {
+    border-color: var(--dawg-color-border-strong);
+    background: var(--dawg-color-surface-muted);
+    color: var(--dawg-color-text-subtle);
+    cursor: not-allowed;
+  }
+
+  .dawg-field__input {
+    flex: 1;
+    box-sizing: border-box;
+    width: 100%;
+    min-width: 0;
+    min-height: calc(var(--_h) - 2px);
+    margin: 0;
+    padding: 0 var(--_px);
+    border: 0;
+    border-radius: inherit;
+    background: transparent;
+    color: inherit;
+    font: inherit;
+    font-size: var(--_fs);
+    line-height: var(--dawg-line-height-normal);
+    outline: none;
+  }
+  .dawg-field__input::placeholder {
+    color: var(--dawg-color-text-subtle);
+    opacity: 1;
+  }
+  .dawg-field__input:disabled {
+    cursor: not-allowed;
+  }
+  /* Search and password fields bring their own buttons. */
+  .dawg-field__input::-webkit-search-cancel-button,
+  .dawg-field__input::-webkit-search-decoration {
+    -webkit-appearance: none;
+    appearance: none;
+  }
+  .dawg-field__input::-ms-reveal {
+    display: none;
+  }
+
+  textarea.dawg-field__input {
+    padding-block: var(--dawg-space-2);
+    resize: vertical;
+  }
+  textarea.dawg-field__input[data-auto-grow] {
+    field-sizing: content;
+    min-height: calc(var(--_rows, 3) * 1lh + 2 * var(--dawg-space-2));
+  }
+
+  select.dawg-field__input {
+    padding-inline-end: calc(var(--_px) + 1.5rem);
+    -webkit-appearance: none;
+    appearance: none;
+    text-overflow: ellipsis;
+    cursor: pointer;
+  }
+  .dawg-field__chevron {
+    position: absolute;
+    inset-inline-end: var(--_px);
+    display: inline-flex;
+    color: var(--dawg-color-text-muted);
+    pointer-events: none;
+  }
+  .dawg-field__chevron svg,
+  .dawg-field__icon svg,
+  .dawg-field__action svg {
+    width: 1.125rem;
+    height: 1.125rem;
+  }
+
+  .dawg-field__icon {
+    display: inline-flex;
+    flex: none;
+    padding-inline-start: var(--_px);
+    color: var(--dawg-color-text-muted);
+    pointer-events: none;
+  }
+  .dawg-field__icon + .dawg-field__input {
+    padding-inline-start: var(--dawg-space-2);
+  }
+  .dawg-field__addon {
+    display: inline-flex;
+    flex: none;
+    align-items: center;
+    padding-inline-end: var(--_px);
+    color: var(--dawg-color-text-muted);
+    font-size: var(--dawg-font-size-sm);
+  }
+  .dawg-field__input:has(+ .dawg-field__addon, + .dawg-field__action) {
+    padding-inline-end: var(--dawg-space-2);
+  }
+
+  /* Small icon button inside the control: clear search, show password. */
+  .dawg-field__action {
+    display: inline-flex;
+    flex: none;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    width: calc(var(--_h) - 0.5rem);
+    height: calc(var(--_h) - 0.5rem);
+    margin: 0;
+    margin-inline-end: 0.1875rem;
+    padding: 0;
+    border: 0;
+    border-radius: max(0px, calc(var(--_radius) - 0.25rem));
+    background: transparent;
+    color: var(--dawg-color-text-muted);
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+  }
+  @media (hover: hover) {
+    .dawg-field__action:hover:not(:disabled) {
+      background: var(--dawg-color-surface-muted);
+      color: var(--dawg-color-text);
+    }
+  }
+  .dawg-field__action:focus-visible {
+    outline: var(--dawg-focus-ring-width) solid var(--dawg-color-focus-ring);
+    outline-offset: 0;
+  }
+  .dawg-field__action:disabled {
+    cursor: not-allowed;
+  }
+
+  /* ---------- One-time code ---------- */
+  /* Sized to fit the code: each character plus its letter spacing is 1.6ch wide. */
+  .dawg-field[data-code] {
+    --_fs: var(--dawg-font-size-xl);
+  }
+  .dawg-field[data-code] .dawg-field__control {
+    justify-self: start;
+    width: calc(var(--_length, 6) * 1.6ch + 2 * var(--_px) + 2px);
+    max-width: 100%;
+    font-family: var(--dawg-font-family-mono);
+    font-size: var(--_fs);
+  }
+  .dawg-field[data-code] .dawg-field__input {
+    padding-inline-end: calc(var(--_px) - 0.6ch);
+    font-family: var(--dawg-font-family-mono);
+    font-variant-numeric: tabular-nums;
+    letter-spacing: 0.6ch;
+  }
+
+  /* ---------- Password strength ---------- */
+  .dawg-password-strength {
+    --_fill: var(--dawg-color-danger);
+    display: flex;
+    align-items: center;
+    gap: var(--dawg-space-3);
+    min-height: 1.3125rem;
+  }
+  /* Nothing typed yet: no empty bar, and no extra gap above the hint. The (empty) text stays
+     in the page, so screen readers announce it once it changes. */
+  .dawg-password-strength:not([data-score]) {
+    min-height: 0;
+    margin-top: calc(-1 * var(--dawg-space-2));
+  }
+  .dawg-password-strength:not([data-score]) .dawg-password-strength__bar {
+    display: none;
+  }
+  .dawg-password-strength[data-score='2'] {
+    --_fill: var(--dawg-color-warning);
+  }
+  .dawg-password-strength[data-score='3'],
+  .dawg-password-strength[data-score='4'] {
+    --_fill: var(--dawg-color-success);
+  }
+  .dawg-password-strength__bar {
+    display: grid;
+    flex: 1;
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--dawg-space-1);
+  }
+  .dawg-password-strength__segment {
+    height: 0.25rem;
+    border-radius: var(--dawg-radius-full);
+    background: var(--dawg-color-track);
+  }
+  .dawg-password-strength__segment[data-filled] {
+    background: var(--_fill);
+  }
+  .dawg-password-strength__text {
+    flex: none;
+    min-width: 5rem;
+    margin: 0;
+    color: var(--dawg-color-text-muted);
+    font-size: var(--dawg-font-size-sm);
+    font-weight: var(--dawg-font-weight-medium);
+    text-align: end;
+  }
+
+  /* ---------- Checkbox and radio ---------- */
+  .dawg-check {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: var(--dawg-space-1) var(--dawg-space-3);
+    align-items: start;
+    min-width: 0;
+    color: var(--dawg-color-text);
+    font-family: var(--dawg-font-family, inherit);
+    font-size: var(--dawg-font-size-sm);
+    line-height: var(--dawg-line-height-normal);
+  }
+  .dawg-check > :not(.dawg-check__input) {
+    grid-column: 2;
+  }
+  .dawg-check__input {
+    --_size: 1.125rem;
+    grid-row: 1;
+    width: var(--_size);
+    height: var(--_size);
+    /* Centre on the first line of the label (1lh is that line's height). */
+    margin: 0.09375rem 0 0;
+    margin: calc((1lh - var(--_size)) / 2) 0 0;
+    font: inherit;
+    border-radius: var(--dawg-radius-xs);
+    accent-color: var(--dawg-color-primary);
+    cursor: pointer;
+  }
+  /* Rounded corners make the focus and error outlines follow the control's shape. */
+  .dawg-check__input[type='radio'] {
+    border-radius: 50%;
+  }
+  @media (pointer: coarse) {
+    .dawg-check__input {
+      --_size: 1.375rem;
+    }
+  }
+  .dawg-check__label {
+    grid-row: 1;
+    justify-self: start;
+    cursor: pointer;
+  }
+  .dawg-check__input:focus-visible {
+    outline: var(--dawg-focus-ring-width) solid var(--dawg-color-focus-ring);
+    outline-offset: var(--dawg-focus-ring-offset);
+  }
+  .dawg-check[data-invalid] .dawg-check__input:not(:focus-visible),
+  .dawg-radio-group[data-invalid]:not([data-variant='card'])
+    .dawg-check__input:not(:focus-visible) {
+    outline: 2px solid var(--dawg-color-danger);
+    outline-offset: 1px;
+  }
+  .dawg-check[data-disabled] .dawg-check__input,
+  .dawg-check[data-disabled] .dawg-check__label,
+  .dawg-radio-group:disabled .dawg-check__input,
+  .dawg-radio-group:disabled .dawg-check__label {
+    cursor: not-allowed;
+  }
+  .dawg-check[data-disabled] .dawg-check__label,
+  .dawg-radio-group:disabled .dawg-check__label {
+    color: var(--dawg-color-text-subtle);
+  }
+
+  /* Card style: a bordered box per choice; the label stretches over the whole box. */
+  .dawg-check[data-variant='card'] {
+    position: relative;
+    padding: var(--dawg-space-3) var(--dawg-space-4);
+    border: 1px solid var(--dawg-color-border-input);
+    border-radius: var(--dawg-input-radius, var(--dawg-radius-md));
+    background: var(--dawg-input-bg, var(--dawg-color-surface));
+  }
+  .dawg-check[data-variant='card'] .dawg-check__label {
+    font-weight: var(--dawg-font-weight-medium);
+  }
+  .dawg-check[data-variant='card'] .dawg-check__label::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+  }
+  @media (hover: hover) {
+    .dawg-check[data-variant='card']:not([data-disabled]):hover {
+      border-color: var(--dawg-color-text-subtle);
+    }
+  }
+  .dawg-check[data-variant='card']:has(.dawg-check__input:checked) {
+    border-color: var(--dawg-color-primary);
+    box-shadow: inset 0 0 0 1px var(--dawg-color-primary);
+  }
+  .dawg-check[data-variant='card'][data-disabled] {
+    background: var(--dawg-color-surface-muted);
+  }
+  .dawg-radio-group[data-invalid] .dawg-check[data-variant='card'] {
+    border-color: var(--dawg-color-danger);
+  }
+
+  .dawg-radio-group {
+    display: grid;
+    gap: var(--dawg-space-2);
+    min-width: 0;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    color: var(--dawg-color-text);
+    font-family: var(--dawg-font-family, inherit);
+  }
+  .dawg-radio-group > legend {
+    margin-bottom: var(--dawg-space-2);
+  }
+  .dawg-radio-group__options {
+    display: grid;
+    gap: var(--dawg-space-3);
+  }
+  .dawg-radio-group[data-orientation='horizontal'] .dawg-radio-group__options {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--dawg-space-3) var(--dawg-space-6);
+  }
+  .dawg-radio-group[data-variant='card'] .dawg-radio-group__options {
+    gap: var(--dawg-space-2);
+  }
+  .dawg-radio-group[data-orientation='horizontal'][data-variant='card'] .dawg-radio-group__options {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 11rem), 1fr));
+    gap: var(--dawg-space-2);
+  }
+
+  /* ---------- Switch ---------- */
+  .dawg-switch {
+    --_w: 2.5rem;
+    --_track-h: 1.5rem;
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: var(--dawg-space-1) var(--dawg-space-3);
+    align-items: center;
+    min-width: 0;
+    color: var(--dawg-color-text);
+    font-family: var(--dawg-font-family, inherit);
+    font-size: var(--dawg-font-size-sm);
+    line-height: var(--dawg-line-height-normal);
+  }
+  @media (pointer: coarse) {
+    .dawg-switch {
+      --_w: 3rem;
+      --_track-h: 1.75rem;
+    }
+  }
+  .dawg-switch > :not(.dawg-switch__control) {
+    grid-column: 2;
+  }
+  .dawg-switch[data-label-placement='start'] {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+  .dawg-switch[data-label-placement='start'] > :not(.dawg-switch__control) {
+    grid-column: 1;
+  }
+  .dawg-switch[data-label-placement='start'] .dawg-switch__control {
+    grid-column: 2;
+  }
+  .dawg-switch__control {
+    position: relative;
+    display: inline-flex;
+    grid-row: 1;
+  }
+  .dawg-switch__label {
+    grid-row: 1;
+    cursor: pointer;
+  }
+  /* The real checkbox covers the track, invisible, so clicks and keys work natively. */
+  .dawg-switch__input {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    opacity: 0;
+    cursor: pointer;
+  }
+  .dawg-switch__track {
+    display: inline-flex;
+    align-items: center;
+    box-sizing: border-box;
+    width: var(--_w);
+    height: var(--_track-h);
+    padding: 0 2px;
+    border: 1px solid var(--dawg-color-border-input);
+    border-radius: var(--dawg-radius-full);
+    background: var(--dawg-color-surface-strong);
+  }
+  .dawg-switch__thumb {
+    box-sizing: border-box;
+    width: calc(var(--_track-h) - 6px);
+    height: calc(var(--_track-h) - 6px);
+    margin-inline-start: 0;
+    border-radius: 50%;
+    background: var(--dawg-color-text-muted);
+  }
+  .dawg-switch__input:checked + .dawg-switch__track {
+    border-color: var(--dawg-color-primary);
+    background: var(--dawg-color-primary);
+  }
+  .dawg-switch__input:checked + .dawg-switch__track .dawg-switch__thumb {
+    /* Logical margin, so the thumb also moves the right way in right-to-left pages. */
+    margin-inline-start: calc(var(--_w) - var(--_track-h));
+    background: var(--dawg-color-surface);
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .dawg-switch__track,
+    .dawg-switch__thumb {
+      transition:
+        background-color var(--dawg-duration-fast) var(--dawg-easing-standard),
+        border-color var(--dawg-duration-fast) var(--dawg-easing-standard),
+        margin var(--dawg-duration-normal) var(--dawg-easing-emphasized);
+    }
+  }
+  @media (hover: hover) {
+    .dawg-switch__input:not(:checked, :disabled):hover + .dawg-switch__track {
+      border-color: var(--dawg-color-text-subtle);
+    }
+  }
+  .dawg-switch__input:focus-visible + .dawg-switch__track {
+    outline: var(--dawg-focus-ring-width) solid var(--dawg-color-focus-ring);
+    outline-offset: var(--dawg-focus-ring-offset);
+  }
+  .dawg-switch[data-invalid] .dawg-switch__input:not(:checked) + .dawg-switch__track {
+    border-color: var(--dawg-color-danger);
+  }
+  .dawg-switch__input:disabled {
+    cursor: not-allowed;
+  }
+  .dawg-switch__input:disabled + .dawg-switch__track {
+    opacity: 0.5;
+  }
+  .dawg-switch[data-disabled] .dawg-switch__label {
+    color: var(--dawg-color-text-subtle);
+    cursor: not-allowed;
+  }
+
+  /* ---------- Form alert ---------- */
+  .dawg-form-alert {
+    --_tone: var(--dawg-color-danger);
+    --_tone-border: var(--dawg-color-danger-border);
+    display: flex;
+    gap: var(--dawg-space-3);
+    box-sizing: border-box;
+    min-width: 0;
+    padding: var(--dawg-space-4);
+    border: 1px solid var(--_tone-border);
+    border-inline-start: 4px solid var(--_tone);
+    border-radius: var(--dawg-radius-md);
+    background: var(--dawg-color-surface);
+    color: var(--dawg-color-text);
+    font-family: var(--dawg-font-family, inherit);
+    font-size: var(--dawg-font-size-sm);
+    line-height: var(--dawg-line-height-normal);
+  }
+  .dawg-form-alert[data-tone='warning'] {
+    --_tone: var(--dawg-color-warning);
+    --_tone-border: var(--dawg-color-warning-border);
+  }
+  .dawg-form-alert[data-tone='info'] {
+    --_tone: var(--dawg-color-info);
+    --_tone-border: var(--dawg-color-info-border);
+  }
+  .dawg-form-alert[data-tone='success'] {
+    --_tone: var(--dawg-color-success);
+    --_tone-border: var(--dawg-color-success-border);
+  }
+  .dawg-form-alert:focus-visible {
+    outline: var(--dawg-focus-ring-width) solid var(--dawg-color-focus-ring);
+    outline-offset: var(--dawg-focus-ring-offset);
+  }
+  .dawg-form-alert__icon {
+    display: inline-flex;
+    flex: none;
+    color: var(--_tone);
+  }
+  .dawg-form-alert__icon svg {
+    width: 1.25rem;
+    height: 1.25rem;
+    margin-top: 0.125rem;
+  }
+  .dawg-form-alert__body {
+    display: grid;
+    gap: var(--dawg-space-1);
+    min-width: 0;
+  }
+  .dawg-form-alert__title {
+    margin: 0;
+    font-size: var(--dawg-font-size-md);
+    font-weight: var(--dawg-font-weight-semibold);
+  }
+  .dawg-form-alert__list {
+    display: grid;
+    gap: var(--dawg-space-1);
+    margin: var(--dawg-space-1) 0 0;
+    padding-inline-start: 1.25rem;
+  }
+  .dawg-form-alert__list a {
+    color: var(--_tone);
+    font-weight: var(--dawg-font-weight-medium);
+    text-underline-offset: 0.15em;
+  }
+  .dawg-form-alert__list a:focus-visible {
+    outline: var(--dawg-focus-ring-width) solid var(--dawg-color-focus-ring);
+    outline-offset: 2px;
+    border-radius: var(--dawg-radius-xs);
+  }
+
+  /* ---------- Windows High Contrast ---------- */
+  @media (forced-colors: active) {
+    .dawg-field__control:has(.dawg-field__input:focus-visible),
+    .dawg-check__input:focus-visible,
+    .dawg-switch__input:focus-visible + .dawg-switch__track {
+      outline-color: Highlight;
+    }
+    .dawg-check[data-variant='card']:has(.dawg-check__input:checked) {
+      border-color: Highlight;
+      outline: 1px solid Highlight;
+      outline-offset: -2px;
+    }
+    .dawg-password-strength__segment {
+      forced-color-adjust: none;
+      border: 1px solid CanvasText;
+      background: Canvas;
+    }
+    .dawg-password-strength__segment[data-filled] {
+      background: CanvasText;
+    }
+    .dawg-switch__track,
+    .dawg-switch__thumb {
+      forced-color-adjust: none;
+    }
+    .dawg-switch__track {
+      border-color: CanvasText;
+      background: Canvas;
+    }
+    .dawg-switch__thumb {
+      background: CanvasText;
+    }
+    .dawg-switch__input:checked + .dawg-switch__track {
+      border-color: Highlight;
+      background: Highlight;
+    }
+    .dawg-switch__input:checked + .dawg-switch__track .dawg-switch__thumb {
+      background: HighlightText;
+    }
+    .dawg-switch__input:disabled + .dawg-switch__track {
+      border-color: GrayText;
+      opacity: 1;
+    }
+    .dawg-switch__input:disabled + .dawg-switch__track .dawg-switch__thumb {
+      background: GrayText;
+    }
+  }
+}

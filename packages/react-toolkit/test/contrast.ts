@@ -103,3 +103,11 @@ export const neutralTextPairs: Pair[] = [
   [c('text-subtle'), c('bg'), 4.5],
   [c('text-subtle'), c('surface'), 4.5],
 ];
+
+/** Form controls: their boundaries and the switch thumb must stand out (WCAG 1.4.11, 3:1). */
+export const controlPairs: Pair[] = [
+  [c('border-input'), c('surface'), 3],
+  [c('border-input'), c('bg'), 3, c('bg')],
+  [c('border-input'), c('surface-muted'), 3],
+  [c('text-muted'), c('surface-strong'), 3], // switch thumb on its "off" track
+];

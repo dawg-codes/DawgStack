@@ -4,6 +4,7 @@ export * from './components/button';
 export * from './components/card';
 export * from './components/divider';
 export * from './components/empty-state';
+export * from './components/form';
 export * from './components/progress-bar';
 export * from './components/skeleton';
 export * from './components/spinner';
