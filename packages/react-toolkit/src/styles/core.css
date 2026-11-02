@@ -77,6 +77,8 @@
     --dawg-color-surface-strong: #e4e4e7;
     --dawg-color-border: #e4e4e7;
     --dawg-color-border-strong: #d4d4d8;
+    /* Form control borders: 3:1 against surfaces (WCAG 1.4.11), unlike decorative borders. */
+    --dawg-color-border-input: #86868f;
 
     --dawg-color-text: #18181b;
     --dawg-color-text-muted: #52525b;
@@ -147,6 +149,7 @@
     --dawg-color-surface-strong: #3f3f46;
     --dawg-color-border: #303036;
     --dawg-color-border-strong: #52525b;
+    --dawg-color-border-input: #75757f;
 
     --dawg-color-text: #fafafa;
     --dawg-color-text-muted: #a1a1aa;
@@ -213,6 +216,7 @@
       --dawg-color-surface-strong: #3f3f46;
       --dawg-color-border: #303036;
       --dawg-color-border-strong: #52525b;
+      --dawg-color-border-input: #75757f;
 
       --dawg-color-text: #fafafa;
       --dawg-color-text-muted: #a1a1aa;

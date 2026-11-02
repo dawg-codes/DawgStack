@@ -5,6 +5,7 @@
 export const DESIGN_TOKENS = [
   'color-bg',
   'color-border',
+  'color-border-input',
   'color-border-strong',
   'color-danger',
   'color-danger-border',
@@ -110,6 +111,8 @@ export const COMPONENT_TOKENS = [
   'card-radius',
   'divider-color',
   'font-family',
+  'input-bg',
+  'input-radius',
   'progress-fill',
   'progress-track',
   'skeleton-radius',

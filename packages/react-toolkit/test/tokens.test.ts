@@ -5,6 +5,7 @@ import { describe, expect, it } from 'vitest';
 import {
   contrast,
   coreTokens,
+  controlPairs,
   indicatorPairs,
   neutralTextPairs,
   tonePairs,
@@ -13,7 +14,12 @@ import {
 
 const { light, dark, systemDark } = coreTokens;
 const TONES = ['primary', 'neutral', 'info', 'success', 'warning', 'danger'];
-const PAIRS: Pair[] = [...neutralTextPairs, ...TONES.flatMap(tonePairs), ...indicatorPairs];
+const PAIRS: Pair[] = [
+  ...neutralTextPairs,
+  ...TONES.flatMap(tonePairs),
+  ...indicatorPairs,
+  ...controlPairs,
+];
 
 describe('design tokens', () => {
   it('keeps the dark palette identical for data-dawg-theme="dark" and "system"', () => {
