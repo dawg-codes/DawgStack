@@ -7,7 +7,7 @@ dist/
 
 # Test and tool output
 coverage/
-screenshots/
+/screenshots/
 *.tgz
 
 # Logs and OS files
