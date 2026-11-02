@@ -15,6 +15,7 @@ Accessible, themeable React components and design tokens from **DawgStack**.
 - [Theming](#theming): [ThemeProvider and ThemeToggle](#themeprovider-and-themetoggle) · [Presets](#presets) · [Custom themes](#custom-themes) · [Theming part of a page](#theming-part-of-a-page) · [Plain HTML and CSS](#plain-html-and-css)
 - [Components](#components): [Button](#button) · [Card](#card) · [Badge and StatusBadge](#badge-and-statusbadge) · [Avatar](#avatar) · [Divider](#divider) · [Spinner](#spinner) · [Skeleton](#skeleton) · [ProgressBar](#progressbar) · [EmptyState](#emptystate) · [VisuallyHidden](#visuallyhidden)
 - [Forms](#forms): [Shared props](#shared-props) · [Validation](#validation) · [Controls](#controls)
+- [Dialogs, toasts and menus](#dialogs-toasts-and-menus): [Dialog](#dialog) · [ConfirmDialog](#confirmdialog) · [Toasts](#toasts) · [DropdownMenu](#dropdownmenu)
 - [Browser support](#browser-support)
 - [Known limitations](#known-limitations)
 
@@ -23,7 +24,7 @@ Accessible, themeable React components and design tokens from **DawgStack**.
 Import the CSS once, near the root of your app. Choose one of two options.
 
 ```ts
-// Option 1: everything (about 57 kB unminified, about 10 kB gzipped)
+// Option 1: everything (about 69 kB unminified, about 12 kB gzipped)
 import '@dawg-codes/react-toolkit/styles.css';
 
 // Option 2: only what you use. core.css is always required and must come first.
@@ -32,11 +33,11 @@ import '@dawg-codes/react-toolkit/css/button.css';
 import '@dawg-codes/react-toolkit/css/card.css';
 ```
 
-Component files in `css/` are named after the component's entry point: `avatar`, `badge` (also covers StatusBadge), `button`, `card`, `divider`, `empty-state`, `form` (all form controls), `progress-bar`, `skeleton`, `spinner` and `theme` (ThemeToggle). VisuallyHidden's styles are in `core.css`.
+Component files in `css/` are named after the component's entry point: `avatar`, `badge` (also covers StatusBadge), `button`, `card`, `dialog` (also covers ConfirmDialog), `divider`, `empty-state`, `form` (all form controls), `menu` (DropdownMenu), `progress-bar`, `skeleton`, `spinner`, `theme` (ThemeToggle) and `toast`. VisuallyHidden's styles are in `core.css`. ConfirmDialog and DropdownMenu are built with Button, so they also need `button.css`.
 
 **The CSS is optional.** To use your own styles instead, skip these imports: every component renders stable `dawg-*` class names, plus `data-*` attributes for its options (for example `data-variant="primary"`), for you to style.
 
-The toolkit never styles `html` or `body`. Use the tokens for your page if you like:
+The toolkit doesn't style `html` or `body`, except to stop the page scrolling while a modal Dialog is open. Use the tokens for your page if you like:
 
 ```css
 body {
@@ -149,7 +150,7 @@ Every accent meets WCAG AA contrast in light and dark mode, and tests check ever
 
 ### Custom themes
 
-`defineTheme` creates a theme from token overrides. Token names are typed, so your editor autocompletes all 108 of them. They are also checked when the theme is created, so a typo fails straight away instead of silently doing nothing.
+`defineTheme` creates a theme from token overrides. Token names are typed, so your editor autocompletes all 114 of them. They are also checked when the theme is created, so a typo fails straight away instead of silently doing nothing.
 
 ```tsx
 import {
@@ -241,7 +242,7 @@ Check contrast when you change colours. The defaults pass WCAG AA in both themes
 | Text            | `--dawg-color-text`, `-text-muted`, `-text-subtle`, `--dawg-color-focus-ring`                                                                                                                                      |
 | Tones           | for each of `primary`, `neutral`, `info`, `success`, `warning`, `danger`: `--dawg-color-<tone>` (text and graphics), `-soft` (tinted background), `-border`, `-solid`, `-solid-hover`, `-on-solid` (text on solid) |
 | Type and layout | `--dawg-font-size-xs` … `-xl`, `--dawg-font-weight-*`, `--dawg-space-1` … `-12`, `--dawg-radius-xs` … `-full`, `--dawg-control-height-sm/md/lg`, `--dawg-touch-target`                                             |
-| Effects         | `--dawg-shadow-sm/md/lg`, `--dawg-duration-*`, `--dawg-easing-*`                                                                                                                                                   |
+| Effects         | `--dawg-shadow-sm/md/lg`, `--dawg-duration-*`, `--dawg-easing-*`, `--dawg-color-overlay` (behind modal dialogs)                                                                                                    |
 
 **Per-component hooks.** Set these anywhere: they inherit, so `:root` works.
 
@@ -257,6 +258,9 @@ Check contrast when you change colours. The defaults pass WCAG AA in both themes
 | `--dawg-spinner-color`, `--dawg-spinner-size`                   | Spinner colour and size                           |
 | `--dawg-progress-track`, `--dawg-progress-fill`                 | ProgressBar colours                               |
 | `--dawg-input-bg`, `--dawg-input-radius`                        | Form control background and corners               |
+| `--dawg-dialog-radius`                                          | Dialog corners                                    |
+| `--dawg-menu-radius`, `--dawg-menu-z`                           | DropdownMenu corners and stacking (default 1100)  |
+| `--dawg-toast-radius`, `--dawg-toast-z`                         | Toast corners and stacking (default 1000)         |
 
 Every component also accepts `className` and `style`, and exposes its options as `data-*` attributes (for example `data-variant="primary"`) that you can target in CSS.
 
@@ -681,9 +685,151 @@ Pass `strength={estimatePasswordStrength}` to show a meter on sign-up forms (not
 
 **FormAlert** is announced at once for `danger` and `warning` (`role="alert"`), and politely for `info` and `success` (`role="status"`). Extra `children` are shown under the title.
 
+## Dialogs, toasts and menus
+
+Import them from `@dawg-codes/react-toolkit/dialog`, `/toast` and `/menu` (or the root).
+
+### Dialog
+
+A modal dialog built on the native `<dialog>` element. The browser keeps keyboard focus inside it, makes the rest of the page inert and shows it above everything else; the toolkit adds the layout, a close button, backdrop clicks and returning focus to where it was.
+
+```tsx
+import { Dialog } from '@dawg-codes/react-toolkit/dialog';
+
+const [open, setOpen] = useState(false);
+
+<Button onClick={() => setOpen(true)}>Edit profile</Button>
+<Dialog
+  open={open}
+  onClose={() => setOpen(false)}
+  title="Edit profile"
+  description="This is shown to people you work with."
+  footer={
+    <>
+      <Button onClick={() => setOpen(false)}>Cancel</Button>
+      <Button variant="primary" type="submit" form="profile">Save</Button>
+    </>
+  }
+>
+  <form id="profile" onSubmit={save}>…</form>
+</Dialog>
+```
+
+| Prop              | Type                        | Default    | Notes                                                                          |
+| ----------------- | --------------------------- | ---------- | ------------------------------------------------------------------------------ |
+| `open`            | `boolean`                   | (required) |                                                                                |
+| `onClose`         | `() => void`                | (required) | Called for the close button, Escape and backdrop clicks; set `open` to false   |
+| `title`           | `ReactNode`                 | (required) | An `<h2>`, and the dialog's accessible name                                    |
+| `description`     | `ReactNode`                 | —          | Read by screen readers when the dialog opens                                   |
+| `footer`          | `ReactNode`                 | —          | Actions. On phones they stack full width, the last one on top                  |
+| `size`            | `'sm' \| 'md' \| 'lg'`      | `'md'`     | Maximum width: 26, 32 or 48rem                                                 |
+| `dismissible`     | `boolean`                   | `true`     | `false` ignores Escape and backdrop clicks and hides the close button          |
+| `initialFocus`    | `RefObject<HTMLElement>`    | —          | What to focus on opening; otherwise the browser picks the first focusable item |
+| `closeLabel`      | `string`                    | `'Close'`  | Accessible name of the × button                                                |
+| `hideCloseButton` | `boolean`                   | `false`    |                                                                                |
+| `role`            | `'dialog' \| 'alertdialog'` | `'dialog'` | Use ConfirmDialog for confirmations                                            |
+
+The body scrolls when the content is long, so the title and actions stay in view, and the page behind doesn't scroll. To put a form's submit button in the footer, give the form an `id` and the button `form="that-id"`.
+
+### ConfirmDialog
+
+Asks the user to confirm an action (`role="alertdialog"`).
+
+```tsx
+import { ConfirmDialog } from '@dawg-codes/react-toolkit/dialog';
+
+<ConfirmDialog
+  open={confirming}
+  title="Delete this project?"
+  description="Its files and history will be removed."
+  confirmLabel="Delete project"
+  tone="danger"
+  loading={deleting}
+  onConfirm={remove}
+  onCancel={() => setConfirming(false)}
+/>;
+```
+
+- Label the confirm button with what it does ("Delete project"), not "OK" or "Yes".
+- With `tone="danger"`, the button is red and **Cancel** gets focus first, so an accidental Enter doesn't delete anything. Otherwise the confirm button gets focus.
+- While `loading`, the confirm button shows a spinner, Cancel is disabled and Escape is ignored. Close the dialog yourself when the work is done.
+- Also takes `cancelLabel`, `size` (default `sm`) and `children` for extra content.
+
+### Toasts
+
+Short messages that appear for a few seconds, such as "Saved". Add a `ToastProvider` once, near the root, then call `toast()` from anywhere below it:
+
+```tsx
+import { ToastProvider, useToast } from '@dawg-codes/react-toolkit/toast';
+
+<ToastProvider>
+  <App />
+</ToastProvider>;
+
+function SaveButton() {
+  const { toast } = useToast();
+  return (
+    <Button onClick={() => save().then(() => toast({ title: 'Saved', tone: 'success' }))}>
+      Save
+    </Button>
+  );
+}
+```
+
+`toast(options)` returns an id, and `dismiss(id)` hides one toast (`dismiss()` hides them all).
+
+| Option        | Type                                                        | Default     | Notes                                                          |
+| ------------- | ----------------------------------------------------------- | ----------- | -------------------------------------------------------------- |
+| `title`       | `ReactNode`                                                 | (required)  |                                                                |
+| `description` | `ReactNode`                                                 | —           |                                                                |
+| `tone`        | `'neutral' \| 'info' \| 'success' \| 'warning' \| 'danger'` | `'neutral'` | Adds an icon and a coloured edge                               |
+| `action`      | `{ label: string; onClick: () => void }`                    | —           | A button such as Undo. The toast closes after it runs          |
+| `duration`    | `number`                                                    | provider's  | Milliseconds, or `Infinity` to stay until closed               |
+| `id`          | `string`                                                    | generated   | Reuse an id to replace a toast, e.g. "Uploading…" → "Uploaded" |
+
+`ToastProvider` takes `position` (`'top-start'`, `'top-center'`, `'top-end'`, `'bottom-start'`, `'bottom-center'` or `'bottom-end'`, the default), `duration` (default 5000), `limit` (default 4; the oldest goes first), and `label` and `closeLabel` for translations.
+
+**Accessibility.** Toasts are announced politely by screen readers from a live region that is always on the page. They pause while the pointer or keyboard focus is on them, or the tab is hidden, and every toast has a close button. Because toasts disappear, anything important, and anything a toast's action does, must also be available somewhere else in your app. For errors the user has to act on, prefer a message in the page, such as a FormAlert, or `duration: Infinity`.
+
+### DropdownMenu
+
+A button that opens a list of actions, following the ARIA menu button pattern.
+
+```tsx
+import { DropdownMenu } from '@dawg-codes/react-toolkit/menu';
+
+<DropdownMenu
+  label="Actions"
+  items={[
+    { label: 'Edit', icon: <EditIcon />, onSelect: edit },
+    { label: 'Duplicate', onSelect: duplicate },
+    { label: 'Help', href: '/help' },
+    'separator',
+    { label: 'Delete', tone: 'danger', onSelect: confirmDelete },
+  ]}
+/>
+
+<DropdownMenu label={<MoreIcon />} iconOnly aria-label="Actions for Ana" variant="ghost" align="end" items={…} />
+```
+
+| Prop                             | Type               | Default        | Notes                                                   |
+| -------------------------------- | ------------------ | -------------- | ------------------------------------------------------- |
+| `label`                          | `ReactNode`        | (required)     | The button's content                                    |
+| `items`                          | `MenuItem[]`       | (required)     | Actions, links (`href`) or `'separator'`                |
+| `align`                          | `'start' \| 'end'` | `'start'`      | Which edge of the button the menu lines up with         |
+| `aria-label`                     | `string`           | —              | **Required with `iconOnly`**; name the thing it acts on |
+| `variant`, `size`, `iconOnly`, … | as Button          | as Button      |                                                         |
+| `showArrow`                      | `boolean`          | not `iconOnly` | Down arrow after the label                              |
+
+Each item takes `label`, `onSelect` or `href`, and optionally `icon`, `tone: 'danger'`, `disabled` and `textValue` (for type-to-select when the label isn't plain text).
+
+**Keyboard.** Enter, Space or the arrow keys open the menu. Arrow keys move between items (disabled items can be reached but not chosen), Home and End jump to the ends, and typing a letter jumps to the next item starting with it. Enter or Space chooses; Escape closes and returns focus to the button; Tab closes and moves on.
+
+**Positioning.** The menu is positioned against the window, so it isn't cut off inside scrolling tables or cards that hide overflow. It opens upwards when there isn't room below and stays on screen, including in right-to-left pages. It sits above toasts.
+
 ## Browser support
 
-The styles need cascade layers, `color-mix()` and logical properties, which are supported in Chrome and Edge 111+, Firefox 113+ and Safari 16.2+ (all released in 2023). Browsers without cascade-layer support ignore the styles completely. `:has()` is used for the interactive card's focus ring, the focus ring around a whole form control (with its icon and buttons) and the selected radio card's border. Without it, the card's ring stays on the link, form controls fall back to `:focus-within`, and a selected radio card shows only its checked radio. TextArea's `autoGrow` needs CSS `field-sizing` (Chrome and Edge 123+); elsewhere the text area keeps its height and users can resize it.
+The styles need cascade layers, `color-mix()` and logical properties, which are supported in Chrome and Edge 111+, Firefox 113+ and Safari 16.2+ (all released in 2023). Browsers without cascade-layer support ignore the styles completely. `:has()` is used for the interactive card's focus ring, the focus ring around a whole form control (with its icon and buttons) and the selected radio card's border. Without it, the card's ring stays on the link, form controls fall back to `:focus-within`, and a selected radio card shows only its checked radio. TextArea's `autoGrow` needs CSS `field-sizing` (Chrome and Edge 123+); elsewhere the text area keeps its height and users can resize it. Dialog uses the native `<dialog>` element and `:modal`; the page-scroll lock behind it also uses `:has()`.
 
 ## Server rendering and React Server Components
 
@@ -693,11 +839,13 @@ Components render on the server: there is no `window` or `document` access durin
 
 - **Not published yet.** This is a pre-release workspace package.
 - **No icon set.** Pass your own SVG icons to `icon`, `startIcon` and similar props.
-- **Not included yet:** Tooltip, Tabs and Breadcrumbs; in forms, multiple select, combobox (autocomplete), date picker and file upload.
+- **Not included yet:** Tooltip, Tabs and Breadcrumbs; in forms, multiple select, combobox (autocomplete), date picker and file upload; submenus and checkable items in DropdownMenu.
+- **Toasts shown while a modal Dialog is open appear behind it** and can't be reached until it closes, because the browser makes everything outside the dialog inert. Show messages inside the dialog instead (for example with FormAlert).
+- **Menus and toasts are rendered where you put them, not in a portal**, so React stays the only dependency. They use fixed positioning, which breaks inside an ancestor with `transform`, `filter` or `contain`; put the ToastProvider near the root.
 - **Button is always a `<button>`.** For links, use `buttonStyleProps()` on an `<a>` or your router's link.
 - **Card's `as` is limited to non-interactive elements**, by design. Use the stretched-link pattern for clickable cards.
 - **Avatar initials come from the first and last words of the name** and may not suit every naming convention. Pass `alt` and a custom `fallback`, or render your own initials, if needed.
-- **Right-to-left layouts are only partly tested.** ProgressBar and Switch have been checked in a right-to-left page; the other components use logical properties in most places but have not been tested in RTL yet.
+- **Right-to-left layouts are only partly tested.** ProgressBar, Switch and DropdownMenu have been checked in a right-to-left page; the other components use logical properties in most places but have not been tested in RTL yet.
 
 ## License
 

@@ -1,5 +1,5 @@
 // Every customisable design token, without the `--dawg-` prefix.
-// Kept in sync with core.css and the component styles by test/theme-tokens.test.ts.
+// Kept in sync with core.css and the component styles by test/theme-presets.test.ts.
 
 /** Tokens defined in core.css (colours, type, spacing, shape, motion). */
 export const DESIGN_TOKENS = [
@@ -26,6 +26,7 @@ export const DESIGN_TOKENS = [
   'color-neutral-soft',
   'color-neutral-solid',
   'color-neutral-solid-hover',
+  'color-overlay',
   'color-primary',
   'color-primary-border',
   'color-primary-on-solid',
@@ -109,15 +110,20 @@ export const COMPONENT_TOKENS = [
   'card-bg',
   'card-gap',
   'card-radius',
+  'dialog-radius',
   'divider-color',
   'font-family',
   'input-bg',
   'input-radius',
+  'menu-radius',
+  'menu-z',
   'progress-fill',
   'progress-track',
   'skeleton-radius',
   'spinner-color',
   'spinner-size',
+  'toast-radius',
+  'toast-z',
 ] as const;
 
 export type DesignTokenName = (typeof DESIGN_TOKENS)[number];

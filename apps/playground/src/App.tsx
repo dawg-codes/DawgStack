@@ -35,7 +35,9 @@ import {
   type AccentPresetName,
   type ShapePresetName,
 } from '@dawg-codes/react-toolkit/theme';
+import { ToastProvider } from '@dawg-codes/react-toolkit/toast';
 import { FormsDemo } from './FormsDemo';
+import { OverlaysDemo } from './OverlaysDemo';
 import {
   AlertIcon,
   ArrowRightIcon,
@@ -160,26 +162,28 @@ export function App() {
   );
   return (
     <ThemeProvider theme={theme}>
-      <Playground
-        customise={
-          <div className="pg-customise">
-            <ChoiceGroup
-              legend="Accent"
-              name="accent"
-              value={accent}
-              options={ACCENTS}
-              onChange={setAccent}
-            />
-            <ChoiceGroup
-              legend="Corners"
-              name="shape"
-              value={shape}
-              options={SHAPES}
-              onChange={setShape}
-            />
-          </div>
-        }
-      />
+      <ToastProvider>
+        <Playground
+          customise={
+            <div className="pg-customise">
+              <ChoiceGroup
+                legend="Accent"
+                name="accent"
+                value={accent}
+                options={ACCENTS}
+                onChange={setAccent}
+              />
+              <ChoiceGroup
+                legend="Corners"
+                name="shape"
+                value={shape}
+                options={SHAPES}
+                onChange={setShape}
+              />
+            </div>
+          }
+        />
+      </ToastProvider>
     </ThemeProvider>
   );
 }
@@ -267,6 +271,10 @@ function Playground({ customise }: { customise: ReactNode }) {
 
         <Section id="forms" title="Form controls">
           <FormsDemo />
+        </Section>
+
+        <Section id="overlays" title="Dialogs, toasts and menus">
+          <OverlaysDemo />
         </Section>
 
         <Section id="cards" title="Card">
