@@ -39,6 +39,7 @@ import { ToastProvider } from '@dawg-codes/react-toolkit/toast';
 import { FormsDemo } from './FormsDemo';
 import { AppShellDemo, LayoutLinks, SignInDemo, useHash } from './LayoutDemos';
 import { OverlaysDemo } from './OverlaysDemo';
+import { TableDemo } from './TableDemo';
 import {
   AlertIcon,
   ArrowRightIcon,
@@ -287,6 +288,10 @@ function Playground({ customise }: { customise: ReactNode }) {
 
         <Section id="forms" title="Form controls">
           <FormsDemo />
+        </Section>
+
+        <Section id="table" title="Data table">
+          <TableDemo />
         </Section>
 
         <Section id="layouts" title="App layout">

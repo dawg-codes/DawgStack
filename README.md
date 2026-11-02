@@ -12,7 +12,7 @@ DawgStack is an open-source React toolkit by Dawg Codes: reusable UI components,
 
 ## Features
 
-- **Accessible components.** Buttons, cards, badges, avatars, loading states, form controls, dialogs, toasts, menus, app layouts and more. They use semantic HTML and correct ARIA, work with the keyboard, and are tested with axe-core.
+- **Accessible components.** Buttons, cards, badges, avatars, loading states, form controls, dialogs, toasts, menus, app layouts, a data table and more. They use semantic HTML and correct ARIA, work with the keyboard, and are tested with axe-core.
 - **Themes users can switch.** A ready-made toggle for light, dark or follow-the-system. The choice is saved, follows the OS live, stays in sync across tabs, and never flashes the wrong theme on load.
 - **Modular styling.** Mix and match accent presets (indigo, teal, pink, graphite) with shape presets (sharp, default, round), define your own typed theme, or give one part of a page its own theme.
 - **Boilerplate templates.** Complete apps you copy and own. Use one as it is, or change a few clearly marked files: name, navigation, theme and where the data comes from.
@@ -68,6 +68,10 @@ export function App() {
 
 ![The app layout demo on a computer in light mode and on a phone in dark mode](docs/screenshots/layout.png)
 
+**Data table**: sorting, selection with bulk actions, row menus, pagination and CSV export (light), and the same table on a phone (dark).
+
+![A data table with two rows selected in light mode, and on a phone in dark mode](docs/screenshots/table.png)
+
 **Dialogs, toasts and menus**: a modal dialog with a form, and in dark mode an actions menu and toasts.
 
 ![A dialog in light mode, and a dropdown menu with toasts in dark mode](docs/screenshots/overlays.png)
@@ -100,6 +104,8 @@ The [`@dawg-codes/react-toolkit`](packages/react-toolkit) package provides:
 | Toasts                | Brief messages that pause on hover and focus, with optional actions     |
 | DropdownMenu          | An actions menu with full keyboard support that never gets clipped      |
 | App layout            | AppShell, AppHeader, SideNav, MobileTabBar, PageHeader and AuthLayout   |
+| DataTable, Pagination | Sortable, selectable tables with row actions, and page navigation       |
+| CSV utilities         | Export tables to CSV safely, download files and read CSV back           |
 | VisuallyHidden        | Text for screen readers only                                            |
 | Theme tools           | ThemeProvider, ThemeToggle, ThemeScope, presets and typed custom themes |
 
@@ -125,7 +131,7 @@ Each template keeps the things you're most likely to change in a few obvious fil
 | Admin dashboard              | App layout with side navigation, overview and settings                                    | Planned   |
 | User management              | Searchable, sortable user table with bulk actions                                         | Planned   |
 
-The planned templates need one more component group, a data table. The form controls, dialogs, toasts, menus and app layouts they use are ready.
+All the components the planned templates need are now ready; the templates themselves come next.
 
 ```bash
 pnpm starter                                                   # run it inside this repository
