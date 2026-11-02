@@ -16,6 +16,7 @@ Accessible, themeable React components and design tokens from **DawgStack**.
 - [Components](#components): [Button](#button) · [Card](#card) · [Badge and StatusBadge](#badge-and-statusbadge) · [Avatar](#avatar) · [Divider](#divider) · [Spinner](#spinner) · [Skeleton](#skeleton) · [ProgressBar](#progressbar) · [EmptyState](#emptystate) · [VisuallyHidden](#visuallyhidden)
 - [Forms](#forms): [Shared props](#shared-props) · [Validation](#validation) · [Controls](#controls)
 - [Dialogs, toasts and menus](#dialogs-toasts-and-menus): [Dialog](#dialog) · [ConfirmDialog](#confirmdialog) · [Toasts](#toasts) · [DropdownMenu](#dropdownmenu)
+- [App layout](#app-layout): [AppShell and AppHeader](#appshell-and-appheader) · [SideNav and MobileTabBar](#sidenav-and-mobiletabbar) · [PageHeader](#pageheader) · [AuthLayout](#authlayout)
 - [Browser support](#browser-support)
 - [Known limitations](#known-limitations)
 
@@ -24,7 +25,7 @@ Accessible, themeable React components and design tokens from **DawgStack**.
 Import the CSS once, near the root of your app. Choose one of two options.
 
 ```ts
-// Option 1: everything (about 69 kB unminified, about 12 kB gzipped)
+// Option 1: everything (about 84 kB unminified, about 14 kB gzipped)
 import '@dawg-codes/react-toolkit/styles.css';
 
 // Option 2: only what you use. core.css is always required and must come first.
@@ -33,7 +34,7 @@ import '@dawg-codes/react-toolkit/css/button.css';
 import '@dawg-codes/react-toolkit/css/card.css';
 ```
 
-Component files in `css/` are named after the component's entry point: `avatar`, `badge` (also covers StatusBadge), `button`, `card`, `dialog` (also covers ConfirmDialog), `divider`, `empty-state`, `form` (all form controls), `menu` (DropdownMenu), `progress-bar`, `skeleton`, `spinner`, `theme` (ThemeToggle) and `toast`. VisuallyHidden's styles are in `core.css`. ConfirmDialog and DropdownMenu are built with Button, so they also need `button.css`.
+Component files in `css/` are named after the component's entry point: `avatar`, `badge` (also covers StatusBadge), `button`, `card`, `dialog` (also covers ConfirmDialog), `divider`, `empty-state`, `form` (all form controls), `layout` (AppShell, AppHeader, SideNav, MobileTabBar, PageHeader and AuthLayout), `menu` (DropdownMenu), `progress-bar`, `skeleton`, `spinner`, `theme` (ThemeToggle) and `toast`. VisuallyHidden's styles are in `core.css`. ConfirmDialog and DropdownMenu are built with Button, so they also need `button.css`; AppShell's narrow-screen drawer is a Dialog, so it needs `dialog.css`.
 
 **The CSS is optional.** To use your own styles instead, skip these imports: every component renders stable `dawg-*` class names, plus `data-*` attributes for its options (for example `data-variant="primary"`), for you to style.
 
@@ -43,6 +44,14 @@ The toolkit doesn't style `html` or `body`, except to stop the page scrolling wh
 body {
   background: var(--dawg-color-bg);
   color: var(--dawg-color-text);
+}
+```
+
+**Your global styles win, so scope element rules.** Your own unlayered CSS beats the toolkit's layered styles, including plain element selectors. A global `a { color: … }` would recolour the links inside SideNav, MobileTabBar and AppShell's skip link. Style only links without a class instead:
+
+```css
+a:not([class]) {
+  color: var(--dawg-color-primary);
 }
 ```
 
@@ -150,7 +159,7 @@ Every accent meets WCAG AA contrast in light and dark mode, and tests check ever
 
 ### Custom themes
 
-`defineTheme` creates a theme from token overrides. Token names are typed, so your editor autocompletes all 114 of them. They are also checked when the theme is created, so a typo fails straight away instead of silently doing nothing.
+`defineTheme` creates a theme from token overrides. Token names are typed, so your editor autocompletes all 119 of them. They are also checked when the theme is created, so a typo fails straight away instead of silently doing nothing.
 
 ```tsx
 import {
@@ -261,6 +270,10 @@ Check contrast when you change colours. The defaults pass WCAG AA in both themes
 | `--dawg-dialog-radius`                                          | Dialog corners                                    |
 | `--dawg-menu-radius`, `--dawg-menu-z`                           | DropdownMenu corners and stacking (default 1100)  |
 | `--dawg-toast-radius`, `--dawg-toast-z`                         | Toast corners and stacking (default 1000)         |
+| `--dawg-sidebar-width`                                          | AppShell sidebar width (default 16rem)            |
+| `--dawg-app-header-height`, `--dawg-app-header-z`               | AppHeader minimum height and stacking             |
+| `--dawg-app-padding`                                            | Space around AppShell's main content              |
+| `--dawg-auth-width`                                             | AuthLayout panel width (default 26rem)            |
 
 Every component also accepts `className` and `style`, and exposes its options as `data-*` attributes (for example `data-variant="primary"`) that you can target in CSS.
 
@@ -715,19 +728,20 @@ const [open, setOpen] = useState(false);
 </Dialog>
 ```
 
-| Prop              | Type                        | Default    | Notes                                                                          |
-| ----------------- | --------------------------- | ---------- | ------------------------------------------------------------------------------ |
-| `open`            | `boolean`                   | (required) |                                                                                |
-| `onClose`         | `() => void`                | (required) | Called for the close button, Escape and backdrop clicks; set `open` to false   |
-| `title`           | `ReactNode`                 | (required) | An `<h2>`, and the dialog's accessible name                                    |
-| `description`     | `ReactNode`                 | —          | Read by screen readers when the dialog opens                                   |
-| `footer`          | `ReactNode`                 | —          | Actions. On phones they stack full width, the last one on top                  |
-| `size`            | `'sm' \| 'md' \| 'lg'`      | `'md'`     | Maximum width: 26, 32 or 48rem                                                 |
-| `dismissible`     | `boolean`                   | `true`     | `false` ignores Escape and backdrop clicks and hides the close button          |
-| `initialFocus`    | `RefObject<HTMLElement>`    | —          | What to focus on opening; otherwise the browser picks the first focusable item |
-| `closeLabel`      | `string`                    | `'Close'`  | Accessible name of the × button                                                |
-| `hideCloseButton` | `boolean`                   | `false`    |                                                                                |
-| `role`            | `'dialog' \| 'alertdialog'` | `'dialog'` | Use ConfirmDialog for confirmations                                            |
+| Prop              | Type                           | Default    | Notes                                                                            |
+| ----------------- | ------------------------------ | ---------- | -------------------------------------------------------------------------------- |
+| `open`            | `boolean`                      | (required) |                                                                                  |
+| `onClose`         | `() => void`                   | (required) | Called for the close button, Escape and backdrop clicks; set `open` to false     |
+| `title`           | `ReactNode`                    | (required) | An `<h2>`, and the dialog's accessible name                                      |
+| `description`     | `ReactNode`                    | —          | Read by screen readers when the dialog opens                                     |
+| `footer`          | `ReactNode`                    | —          | Actions. On phones they stack full width, the last one on top                    |
+| `size`            | `'sm' \| 'md' \| 'lg'`         | `'md'`     | Maximum width: 26, 32 or 48rem                                                   |
+| `dismissible`     | `boolean`                      | `true`     | `false` ignores Escape and backdrop clicks and hides the close button            |
+| `initialFocus`    | `RefObject<HTMLElement>`       | —          | What to focus on opening; otherwise the browser picks the first focusable item   |
+| `closeLabel`      | `string`                       | `'Close'`  | Accessible name of the × button                                                  |
+| `hideCloseButton` | `boolean`                      | `false`    |                                                                                  |
+| `role`            | `'dialog' \| 'alertdialog'`    | `'dialog'` | Use ConfirmDialog for confirmations                                              |
+| `placement`       | `'center' \| 'start' \| 'end'` | `'center'` | `start` and `end` make a full-height side panel (20, 24 or 32rem wide by `size`) |
 
 The body scrolls when the content is long, so the title and actions stay in view, and the page behind doesn't scroll. To put a form's submit button in the footer, give the form an `id` and the button `form="that-id"`.
 
@@ -827,9 +841,110 @@ Each item takes `label`, `onSelect` or `href`, and optionally `icon`, `tone: 'da
 
 **Positioning.** The menu is positioned against the window, so it isn't cut off inside scrolling tables or cards that hide overflow. It opens upwards when there isn't room below and stays on screen, including in right-to-left pages. It sits above toasts.
 
+## App layout
+
+The frame of an app and of its sign-in pages. Import from `@dawg-codes/react-toolkit/layout` (or the root). The playground has full-page demos of both: run `pnpm playground` and open "App layout".
+
+### AppShell and AppHeader
+
+```tsx
+import {
+  AppHeader,
+  AppShell,
+  MobileTabBar,
+  PageHeader,
+  SideNav,
+} from '@dawg-codes/react-toolkit/layout';
+
+<AppShell
+  header={
+    <AppHeader
+      brand={<Logo />}
+      actions={
+        <>
+          <ThemeToggle hideLabels size="sm" />
+          <AccountMenu />
+        </>
+      }
+    />
+  }
+  sidebar={<SideNav sections={sections} currentHref={pathname} />}
+  tabBar={<MobileTabBar items={tabs} currentHref={pathname} />}
+>
+  <PageHeader title="Projects" actions={<Button variant="primary">New project</Button>} />…
+</AppShell>;
+```
+
+What you get:
+
+- **A skip link** ("Skip to main content") as the first thing keyboard users reach. It moves focus to `<main>` without changing the URL, so it also works with hash-based routers.
+- **Landmarks:** AppHeader is the `<header>` (banner), SideNav and MobileTabBar are labelled `<nav>`s, and your page goes in `<main>`.
+- **A sticky header**, and on screens 64rem (1024px) and wider, a sticky sidebar column that scrolls on its own.
+- **A navigation drawer on narrower screens.** AppHeader shows a menu button that opens the same sidebar in a modal side panel (a Dialog with `placement="start"`): focus stays inside, Escape closes it, choosing a link closes it, and focus returns to the menu button. Widening the window closes it.
+- **A bottom tab bar on phones** (narrower than 48rem), with room left under the page so nothing is hidden behind it.
+
+| AppShell prop   | Notes                                                 |
+| --------------- | ----------------------------------------------------- |
+| `header`        | Usually an AppHeader                                  |
+| `sidebar`       | Usually a SideNav; shown as a column or in the drawer |
+| `tabBar`        | Usually a MobileTabBar                                |
+| `children`      | The page, rendered in `<main>`                        |
+| `skipLinkLabel` | Default `'Skip to main content'`                      |
+| `navTitle`      | Heading of the drawer. Default `'Menu'`               |
+| `mainId`        | Id of `<main>`; generated by default                  |
+
+AppHeader takes `brand` (start), `children` (middle, e.g. a search field) and `actions` (end), plus `menuLabel` (default `'Open navigation'`). For your own menu button, `useAppShell()` returns `{ navOpen, openNav, closeNav, hasSidebar }`.
+
+### SideNav and MobileTabBar
+
+```tsx
+const sections: NavSection[] = [
+  { items: [{ label: 'Overview', href: '/', icon: <HomeIcon /> }, { label: 'Inbox', href: '/inbox', icon: <InboxIcon />, badge: '12' }] },
+  { title: 'Workspace', items: [{ label: 'Settings', href: '/settings', icon: <SettingsIcon /> }] },
+];
+
+<SideNav sections={sections} currentHref={pathname} footer={<UserCard />} />
+<MobileTabBar items={tabs} currentHref={pathname} />
+```
+
+- Pass `items` for one list or `sections` for headed groups. Each item has `label`, `href`, and optionally `icon` (decorative), `badge` and `current`.
+- The current page gets `aria-current="page"` and is marked by more than colour: a tinted background and a bar in the side navigation, a pill behind the icon in the tab bar. Set it with `currentHref` or an item's `current`.
+- Badges are read after the label ("Inbox 12"). If a number needs explaining, pass text such as `<><span aria-hidden="true">12</span><VisuallyHidden>12 unread</VisuallyHidden></>`.
+- **Routers.** Links are plain `<a>` elements by default. Pass `renderLink` to use your router's link: `renderLink={({ href, ...props }) => <Link to={href} {...props} />}`.
+- MobileTabBar is for up to five destinations, each with an icon and a short label. SideNav also takes `header`, `footer` and `label` (default `'Main'`; the tab bar's is `'Primary'`).
+
+### PageHeader
+
+The top of a page: an `<h1>` title, an optional `description`, `actions` that wrap under the title on phones, and an `eyebrow` above the title for breadcrumbs or a back link. Use `titleAs="h2"` if the page already has an `<h1>`.
+
+### AuthLayout
+
+A full-page layout for sign-in, sign-up and password reset screens.
+
+```tsx
+import { AuthLayout } from '@dawg-codes/react-toolkit/layout';
+
+<AuthLayout
+  brand={<Logo />}
+  title="Sign in"
+  description="Welcome back."
+  actions={<ThemeToggle hideLabels size="sm" />}
+  footer={
+    <>
+      No account? <a href="/sign-up">Create one</a>
+    </>
+  }
+  aside={<p>Plan, track and ship your projects in one place.</p>}
+>
+  <form>…</form>
+</AuthLayout>;
+```
+
+The form sits in a centred panel inside `<main>`, under an `<h1>`. `actions` go in a `<header>` in the top corner, and `aside` becomes an `<aside>` panel in the accent colour on screens 64rem and wider (hidden on smaller ones, so don't put anything essential there).
+
 ## Browser support
 
-The styles need cascade layers, `color-mix()` and logical properties, which are supported in Chrome and Edge 111+, Firefox 113+ and Safari 16.2+ (all released in 2023). Browsers without cascade-layer support ignore the styles completely. `:has()` is used for the interactive card's focus ring, the focus ring around a whole form control (with its icon and buttons) and the selected radio card's border. Without it, the card's ring stays on the link, form controls fall back to `:focus-within`, and a selected radio card shows only its checked radio. TextArea's `autoGrow` needs CSS `field-sizing` (Chrome and Edge 123+); elsewhere the text area keeps its height and users can resize it. Dialog uses the native `<dialog>` element and `:modal`; the page-scroll lock behind it also uses `:has()`.
+The styles need cascade layers, `color-mix()` and logical properties, which are supported in Chrome and Edge 111+, Firefox 113+ and Safari 16.2+ (all released in 2023). Browsers without cascade-layer support ignore the styles completely. `:has()` is used for the interactive card's focus ring, the focus ring around a whole form control (with its icon and buttons) and the selected radio card's border. Without it, the card's ring stays on the link, form controls fall back to `:focus-within`, and a selected radio card shows only its checked radio. TextArea's `autoGrow` needs CSS `field-sizing` (Chrome and Edge 123+); elsewhere the text area keeps its height and users can resize it. Dialog uses the native `<dialog>` element and `:modal`; the page-scroll lock behind it also uses `:has()`. Side-panel dialogs slide in from the correct edge in right-to-left pages using `:dir()`.
 
 ## Server rendering and React Server Components
 
@@ -839,13 +954,14 @@ Components render on the server: there is no `window` or `document` access durin
 
 - **Not published yet.** This is a pre-release workspace package.
 - **No icon set.** Pass your own SVG icons to `icon`, `startIcon` and similar props.
-- **Not included yet:** Tooltip, Tabs and Breadcrumbs; in forms, multiple select, combobox (autocomplete), date picker and file upload; submenus and checkable items in DropdownMenu.
+- **Not included yet:** Tooltip, Tabs and Breadcrumbs; in forms, multiple select, combobox (autocomplete), date picker and file upload; submenus and checkable items in DropdownMenu; collapsible groups in SideNav.
+- **AppShell's breakpoints are fixed:** the sidebar becomes a column at 64rem and the tab bar hides at 48rem, because CSS media queries can't read custom properties.
 - **Toasts shown while a modal Dialog is open appear behind it** and can't be reached until it closes, because the browser makes everything outside the dialog inert. Show messages inside the dialog instead (for example with FormAlert).
 - **Menus and toasts are rendered where you put them, not in a portal**, so React stays the only dependency. They use fixed positioning, which breaks inside an ancestor with `transform`, `filter` or `contain`; put the ToastProvider near the root.
 - **Button is always a `<button>`.** For links, use `buttonStyleProps()` on an `<a>` or your router's link.
 - **Card's `as` is limited to non-interactive elements**, by design. Use the stretched-link pattern for clickable cards.
 - **Avatar initials come from the first and last words of the name** and may not suit every naming convention. Pass `alt` and a custom `fallback`, or render your own initials, if needed.
-- **Right-to-left layouts are only partly tested.** ProgressBar, Switch and DropdownMenu have been checked in a right-to-left page; the other components use logical properties in most places but have not been tested in RTL yet.
+- **Right-to-left layouts are only partly tested.** ProgressBar, Switch, DropdownMenu and AppShell (sidebar and drawer) have been checked in a right-to-left page; the other components use logical properties in most places but have not been tested in RTL yet.
 
 ## License
 
