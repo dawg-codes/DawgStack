@@ -1,0 +1,263 @@
+/*
+ * Page layout for this template. Colours, spacing and radii come from DawgStack tokens, so the
+ * page follows the theme in theme.ts and the light/dark toggle automatically.
+ */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+html {
+  scroll-padding-top: 5rem; /* keeps section headings clear of the sticky header */
+}
+body {
+  margin: 0;
+  background: var(--dawg-color-bg);
+  color: var(--dawg-color-text);
+  font-family:
+    system-ui,
+    -apple-system,
+    'Segoe UI',
+    Roboto,
+    sans-serif;
+  line-height: 1.5;
+}
+h1,
+h2,
+p {
+  margin: 0;
+}
+a {
+  color: var(--dawg-color-primary);
+}
+:focus-visible {
+  outline: var(--dawg-focus-ring-width) solid var(--dawg-color-focus-ring);
+  outline-offset: var(--dawg-focus-ring-offset);
+}
+
+.container {
+  width: 100%;
+  max-width: 72rem;
+  margin-inline: auto;
+  padding-inline: clamp(1rem, 4vw, 2rem);
+}
+
+.skip-link {
+  position: absolute;
+  top: -4rem;
+  left: 1rem;
+  z-index: 10;
+  padding: var(--dawg-space-2) var(--dawg-space-4);
+  border-radius: var(--dawg-radius-md);
+  background: var(--dawg-color-primary-solid);
+  color: var(--dawg-color-primary-on-solid);
+}
+.skip-link:focus {
+  top: 1rem;
+}
+
+/* ---------- Header ---------- */
+.app-header {
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  border-bottom: 1px solid var(--dawg-color-border);
+  background: var(--dawg-color-surface);
+}
+.app-header__inner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--dawg-space-2) var(--dawg-space-6);
+  min-height: 4rem;
+  padding-block: var(--dawg-space-2);
+}
+.app-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--dawg-space-2);
+  color: var(--dawg-color-text);
+  font-weight: var(--dawg-font-weight-bold);
+  font-size: var(--dawg-font-size-lg);
+  text-decoration: none;
+}
+.app-brand__mark {
+  width: 1.75rem;
+  height: 1.75rem;
+}
+.app-brand__mark rect {
+  fill: var(--dawg-color-primary-solid);
+}
+.app-brand__mark path {
+  fill: none;
+  stroke: var(--dawg-color-primary-on-solid);
+  stroke-width: 2.5;
+  stroke-linecap: round;
+}
+.app-nav {
+  display: flex;
+  gap: var(--dawg-space-1);
+  order: 3;
+  width: 100%;
+  overflow-x: auto;
+}
+.app-nav a {
+  padding: var(--dawg-space-2) var(--dawg-space-3);
+  border-radius: var(--dawg-radius-md);
+  color: var(--dawg-color-text-muted);
+  font-size: var(--dawg-font-size-sm);
+  font-weight: var(--dawg-font-weight-medium);
+  text-decoration: none;
+  white-space: nowrap;
+}
+.app-nav a:hover {
+  background: var(--dawg-color-surface-muted);
+  color: var(--dawg-color-text);
+}
+.app-header .dawg-theme-toggle {
+  margin-left: auto;
+}
+@media (min-width: 48rem) {
+  .app-nav {
+    order: 0;
+    width: auto;
+  }
+}
+
+/* ---------- Page ---------- */
+.page {
+  display: grid;
+  gap: var(--dawg-space-8);
+  padding-block: var(--dawg-space-8) var(--dawg-space-12);
+}
+.page-header h1 {
+  font-size: clamp(1.75rem, 1.4rem + 1.5vw, 2.25rem);
+  line-height: var(--dawg-line-height-tight);
+}
+.page-header p {
+  margin-top: var(--dawg-space-1);
+  color: var(--dawg-color-text-muted);
+}
+.section {
+  display: grid;
+  gap: var(--dawg-space-4);
+}
+.section h2 {
+  font-size: var(--dawg-font-size-xl);
+}
+
+/* ---------- Stats ---------- */
+.stat-grid,
+.team-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr));
+  gap: var(--dawg-space-4);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.stat-grid {
+  /* Two stats per row on phones, four on wide screens. */
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 9rem), 1fr));
+}
+.stat-card {
+  gap: var(--dawg-space-1);
+}
+.stat-card__label {
+  color: var(--dawg-color-text-muted);
+  font-size: var(--dawg-font-size-sm);
+}
+.stat-card__value {
+  font-size: 2rem;
+  font-weight: var(--dawg-font-weight-bold);
+  line-height: var(--dawg-line-height-tight);
+  font-variant-numeric: tabular-nums;
+}
+.stat-card__note {
+  color: var(--dawg-color-text-subtle);
+  font-size: var(--dawg-font-size-xs);
+}
+
+/* ---------- Projects ---------- */
+.project-list,
+.activity-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.project-row {
+  display: grid;
+  gap: var(--dawg-space-2);
+  padding: var(--dawg-space-4) var(--dawg-space-5);
+}
+.project-row + .project-row,
+.activity-item + .activity-item {
+  border-top: 1px solid var(--dawg-color-border);
+}
+.project-row__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--dawg-space-2);
+}
+.project-row__name {
+  font-weight: var(--dawg-font-weight-semibold);
+}
+.project-row__meta {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: var(--dawg-space-2);
+  color: var(--dawg-color-text-muted);
+  font-size: var(--dawg-font-size-sm);
+}
+.project-row__owner {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--dawg-space-2);
+}
+@media (min-width: 48rem) {
+  .project-row {
+    grid-template-columns: minmax(0, 2fr) minmax(0, 2fr) minmax(0, 1.5fr);
+    align-items: center;
+    gap: var(--dawg-space-6);
+  }
+}
+
+/* ---------- Team ---------- */
+.team-card {
+  flex-direction: row;
+  align-items: center;
+}
+.team-card__name {
+  font-weight: var(--dawg-font-weight-semibold);
+}
+.team-card__role {
+  color: var(--dawg-color-text-muted);
+  font-size: var(--dawg-font-size-sm);
+}
+
+/* ---------- Activity ---------- */
+.activity-item {
+  display: flex;
+  align-items: center;
+  gap: var(--dawg-space-3);
+  padding: var(--dawg-space-3) var(--dawg-space-5);
+}
+.activity-item p {
+  flex: 1;
+  min-width: 0;
+  font-size: var(--dawg-font-size-sm);
+}
+.activity-item time {
+  flex: none;
+  color: var(--dawg-color-text-subtle);
+  font-size: var(--dawg-font-size-xs);
+}
+
+.app-footer {
+  padding-block: var(--dawg-space-6) var(--dawg-space-10);
+  border-top: 1px solid var(--dawg-color-border);
+  color: var(--dawg-color-text-muted);
+  font-size: var(--dawg-font-size-sm);
+}
