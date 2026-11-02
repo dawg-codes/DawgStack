@@ -15,6 +15,7 @@ DawgStack is an open-source React toolkit by Dawg Codes: reusable UI components,
 - **Accessible components.** Buttons, cards, badges, avatars, loading states and more. They use semantic HTML and correct ARIA, work with the keyboard, and are tested with axe-core.
 - **Themes users can switch.** A ready-made toggle for light, dark or follow-the-system. The choice is saved, follows the OS live, stays in sync across tabs, and never flashes the wrong theme on load.
 - **Modular styling.** Mix and match accent presets (indigo, teal, pink, graphite) with shape presets (sharp, default, round), define your own typed theme, or give one part of a page its own theme.
+- **Boilerplate templates.** Complete apps you copy and own. Use one as it is, or change a few clearly marked files: name, navigation, theme and where the data comes from.
 - **Take only what you need.** Import all styles, just the components you use, or none and style everything yourself. Every component also has its own JavaScript entry point.
 - **Customise without forking.** 105 tokens (90 design tokens and 15 per-component hooks), all in CSS cascade layers, so your own CSS always wins without `!important`.
 - **Contrast you can trust.** Every colour pair in both themes and in every preset is tested against WCAG AA. Reduced motion, Windows High Contrast and right-to-left progress bars are handled.
@@ -87,6 +88,35 @@ The [`@dawg-codes/react-toolkit`](packages/react-toolkit) package provides:
 
 **See the [component documentation](packages/react-toolkit/README.md)** for props, examples, theming and known limitations.
 
+## Templates
+
+Templates are boilerplate: complete, runnable apps built from the toolkit. Copy one into your project and it's yours to use as it is or adapt. DawgStack keeps two layers apart:
+
+| Layer                  | How you get it     | Updates                                             |
+| ---------------------- | ------------------ | --------------------------------------------------- |
+| Components and theming | Installed from npm | Bug fixes and improvements arrive with `npm update` |
+| Templates              | Copied once        | Yours to change; nothing is locked in a package     |
+
+Each template keeps the things you're most likely to change in a few obvious files: `app.config.ts` (name, navigation, which sections show), `theme.ts` (colours and corners), and `src/data/` (where data comes from).
+
+![The Starter template in light mode on a computer and dark mode on a phone](docs/screenshots/starter.png)
+
+| Template                     | What it is                                                                                | Status    |
+| ---------------------------- | ----------------------------------------------------------------------------------------- | --------- |
+| [Starter](templates/starter) | A themed dashboard: summary numbers, projects with status and progress, team and activity | Available |
+| Sign-in pages                | Sign-in, one-time code and password reset screens                                         | Planned   |
+| Admin dashboard              | App layout with side navigation, overview and settings                                    | Planned   |
+| User management              | Searchable, sortable user table with bulk actions                                         | Planned   |
+
+The planned templates need components that are still being built (app layout, form inputs, dialogs and a data table).
+
+```bash
+pnpm starter                                                   # run it inside this repository
+npx degit dawg-codes/DawgStack/templates/starter my-app        # copy it (once the toolkit is on npm)
+```
+
+See the [Starter README](templates/starter/README.md) for the full copy steps and where to change things.
+
 ## Try it locally
 
 Requires Node.js 22.18+ and pnpm 10 (`corepack enable` sets up pnpm).
@@ -103,23 +133,25 @@ The playground shows every component, with live controls for the mode, accent an
 ```
 packages/react-toolkit/   the component library (@dawg-codes/react-toolkit)
 apps/playground/          local preview app that uses the built library
+templates/                boilerplate apps to copy (see Templates above)
 docs/screenshots/         images used in this README
 tooling/                  repository checks
 ```
 
 ## Scripts
 
-| Command              | What it does                                                                   |
-| -------------------- | ------------------------------------------------------------------------------ |
-| `pnpm check`         | Everything below, in order: what CI runs                                       |
-| `pnpm lint`          | ESLint, including accessibility rules for JSX                                  |
-| `pnpm format:check`  | Prettier                                                                       |
-| `pnpm typecheck`     | TypeScript (strict)                                                            |
-| `pnpm test`          | Unit, accessibility and colour-contrast tests (Vitest)                         |
-| `pnpm build`         | Builds the library into `packages/react-toolkit/dist`                          |
-| `pnpm check:package` | Checks the package's exports and types for every module system (publint, attw) |
-| `pnpm leak-guard`    | Fails if a file contains a blocked term                                        |
-| `pnpm playground`    | Runs the preview app                                                           |
+| Command              | What it does                                                                             |
+| -------------------- | ---------------------------------------------------------------------------------------- |
+| `pnpm check`         | Everything below in order, plus building the playground and every template: what CI runs |
+| `pnpm lint`          | ESLint, including accessibility rules for JSX                                            |
+| `pnpm format:check`  | Prettier                                                                                 |
+| `pnpm typecheck`     | TypeScript (strict)                                                                      |
+| `pnpm test`          | Unit, accessibility and colour-contrast tests (Vitest)                                   |
+| `pnpm build`         | Builds the library into `packages/react-toolkit/dist`                                    |
+| `pnpm check:package` | Checks the package's exports and types for every module system (publint, attw)           |
+| `pnpm leak-guard`    | Fails if a file contains a blocked term                                                  |
+| `pnpm playground`    | Runs the preview app                                                                     |
+| `pnpm starter`       | Runs the Starter template                                                                |
 
 ### Adding a component
 
