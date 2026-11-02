@@ -16,6 +16,11 @@ export default tseslint.config(
   {
     files: ['**/*.tsx'],
     ...jsxA11y.flatConfigs.recommended,
+    rules: {
+      ...jsxA11y.flatConfigs.recommended.rules,
+      // Labels may wrap their text in a few layout spans (e.g. ThemeToggle's icon + text box).
+      'jsx-a11y/label-has-associated-control': ['error', { depth: 4 }],
+    },
   },
   {
     languageOptions: {

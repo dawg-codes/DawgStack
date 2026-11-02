@@ -1,0 +1,98 @@
+@layer dawg.components {
+  .dawg-theme-toggle {
+    --_h: var(--dawg-control-height-sm);
+    display: inline-flex;
+    gap: 2px;
+    box-sizing: border-box;
+    min-width: 0;
+    margin: 0;
+    padding: 3px;
+    border: 1px solid var(--dawg-color-border);
+    border-radius: calc(var(--dawg-radius-md) + 3px);
+    background: var(--dawg-color-surface-muted);
+    font-family: var(--dawg-font-family, inherit);
+  }
+  .dawg-theme-toggle[data-size='sm'] {
+    --_h: 1.75rem;
+  }
+  @media (pointer: coarse) {
+    .dawg-theme-toggle {
+      --_h: var(--dawg-control-height-md);
+    }
+  }
+
+  .dawg-theme-toggle__option {
+    position: relative;
+    display: inline-flex;
+  }
+  /* The real radio covers the option, invisible, so clicks and keyboard use native behaviour. */
+  .dawg-theme-toggle__input {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    opacity: 0;
+    cursor: pointer;
+  }
+  .dawg-theme-toggle__box {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--dawg-space-2);
+    box-sizing: border-box;
+    min-width: var(--_h);
+    min-height: var(--_h);
+    padding: 0 var(--dawg-space-3);
+    border-radius: var(--dawg-radius-md);
+    color: var(--dawg-color-text-muted);
+    font-size: var(--dawg-font-size-sm);
+    font-weight: var(--dawg-font-weight-medium);
+    line-height: var(--dawg-line-height-tight);
+    white-space: nowrap;
+    pointer-events: none;
+    transition:
+      background-color var(--dawg-duration-fast) var(--dawg-easing-standard),
+      color var(--dawg-duration-fast) var(--dawg-easing-standard),
+      box-shadow var(--dawg-duration-fast) var(--dawg-easing-standard);
+  }
+  .dawg-theme-toggle[data-size='sm'] .dawg-theme-toggle__box {
+    padding: 0 var(--dawg-space-2);
+    font-size: var(--dawg-font-size-xs);
+  }
+  .dawg-theme-toggle[data-hide-labels] .dawg-theme-toggle__box {
+    padding: 0;
+  }
+  .dawg-theme-toggle__icon {
+    display: inline-flex;
+  }
+  .dawg-theme-toggle__icon svg {
+    width: 1.15em;
+    height: 1.15em;
+  }
+
+  @media (hover: hover) {
+    .dawg-theme-toggle__input:not(:checked):hover + .dawg-theme-toggle__box {
+      color: var(--dawg-color-text);
+    }
+  }
+  /* Selected: lifted surface plus a primary-coloured ring, so the state doesn't rely on a
+     subtle background change alone (WCAG 1.4.11). */
+  .dawg-theme-toggle__input:checked + .dawg-theme-toggle__box {
+    background: var(--dawg-color-surface);
+    color: var(--dawg-color-text);
+    box-shadow:
+      inset 0 0 0 1.5px var(--dawg-color-primary),
+      var(--dawg-shadow-sm);
+  }
+  .dawg-theme-toggle__input:focus-visible + .dawg-theme-toggle__box {
+    outline: var(--dawg-focus-ring-width) solid var(--dawg-color-focus-ring);
+    outline-offset: 1px;
+  }
+  @media (forced-colors: active) {
+    .dawg-theme-toggle__input:checked + .dawg-theme-toggle__box {
+      outline: 2px solid Highlight;
+      outline-offset: -2px;
+    }
+  }
+}

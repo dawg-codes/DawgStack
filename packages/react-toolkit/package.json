@@ -57,6 +57,9 @@
       "spinner": [
         "./dist/spinner.d.cts"
       ],
+      "theme": [
+        "./dist/theme.d.cts"
+      ],
       "visually-hidden": [
         "./dist/visually-hidden.d.cts"
       ]
@@ -161,6 +164,16 @@
       "require": {
         "types": "./dist/spinner.d.cts",
         "default": "./dist/spinner.cjs"
+      }
+    },
+    "./theme": {
+      "import": {
+        "types": "./dist/theme.d.ts",
+        "default": "./dist/theme.js"
+      },
+      "require": {
+        "types": "./dist/theme.d.cts",
+        "default": "./dist/theme.cjs"
       }
     },
     "./visually-hidden": {
