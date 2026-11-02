@@ -1,0 +1,219 @@
+@layer dawg.components {
+  .dawg-table {
+    --_py: var(--dawg-space-3);
+    --_px: var(--dawg-space-4);
+    display: grid;
+    gap: var(--dawg-space-3);
+    min-width: 0;
+    color: var(--dawg-color-text);
+    font-family: var(--dawg-font-family, inherit);
+  }
+  .dawg-table[data-density='compact'] {
+    --_py: var(--dawg-space-2);
+    --_px: var(--dawg-space-3);
+  }
+
+  /* ---------- Bulk actions ---------- */
+  .dawg-table__bulk {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--dawg-space-2) var(--dawg-space-4);
+    padding: var(--dawg-space-2) var(--dawg-space-2) var(--dawg-space-2) var(--dawg-space-4);
+    border: 1px solid var(--dawg-color-primary-border);
+    border-radius: var(--dawg-radius-lg);
+    background: var(--dawg-color-primary-soft);
+    color: var(--dawg-color-primary);
+    font-size: var(--dawg-font-size-sm);
+    font-weight: var(--dawg-font-weight-semibold);
+  }
+  .dawg-table__bulk-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--dawg-space-2);
+  }
+
+  /* ---------- Scrolling frame ---------- */
+  .dawg-table__scroll {
+    /* Positioned, so visually hidden text inside (the caption, the actions header) is clipped
+       here instead of widening the page. */
+    position: relative;
+    min-width: 0;
+    overflow: auto;
+    border: 1px solid var(--dawg-color-border);
+    border-radius: var(--dawg-radius-lg);
+    background: var(--dawg-color-surface);
+    overscroll-behavior-x: contain;
+  }
+  .dawg-table__scroll:focus-visible {
+    outline: var(--dawg-focus-ring-width) solid var(--dawg-color-focus-ring);
+    outline-offset: var(--dawg-focus-ring-offset);
+  }
+
+  .dawg-table__table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    font-size: var(--dawg-font-size-sm);
+    line-height: var(--dawg-line-height-normal);
+  }
+  .dawg-table__caption {
+    padding: var(--dawg-space-4) var(--_px) var(--dawg-space-3);
+    font-size: var(--dawg-font-size-md);
+    font-weight: var(--dawg-font-weight-semibold);
+    text-align: start;
+  }
+  .dawg-table__table :is(th, td) {
+    padding: var(--_py) var(--_px);
+    border-bottom: 1px solid var(--dawg-color-border);
+    text-align: start;
+    vertical-align: middle;
+  }
+  .dawg-table__table thead th {
+    background: var(--dawg-color-surface-muted);
+    color: var(--dawg-color-text-muted);
+    font-size: var(--dawg-font-size-xs);
+    font-weight: var(--dawg-font-weight-semibold);
+    white-space: nowrap;
+  }
+  .dawg-table__table thead th[aria-sort] {
+    color: var(--dawg-color-text);
+  }
+  .dawg-table__table tbody th {
+    font-weight: var(--dawg-font-weight-semibold);
+  }
+  .dawg-table__table tbody tr:last-child > * {
+    border-bottom: 0;
+  }
+  .dawg-table__table [data-align='end'] {
+    text-align: end;
+    font-variant-numeric: tabular-nums;
+  }
+  .dawg-table__table [data-align='center'] {
+    text-align: center;
+  }
+  @media (hover: hover) {
+    .dawg-table__table tbody tr:not(.dawg-table__loading-row):hover > * {
+      background: var(--dawg-color-surface-muted);
+    }
+  }
+  /* Selected rows: tinted, plus a bar at the start edge (not colour alone). */
+  .dawg-table__table tbody tr[data-selected] > * {
+    background: var(--dawg-color-primary-soft);
+  }
+  .dawg-table__table tbody tr[data-selected] > :first-child {
+    box-shadow: inset 3px 0 0 var(--dawg-color-primary);
+  }
+  .dawg-table__table tbody tr[data-selected] > :first-child:dir(rtl) {
+    box-shadow: inset -3px 0 0 var(--dawg-color-primary);
+  }
+
+  /* Header stays visible while rows scroll (when maxHeight is set). */
+  .dawg-table[data-sticky-header] thead th {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+  }
+
+  /* ---------- Sort buttons ---------- */
+  .dawg-table__sort {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--dawg-space-1);
+    margin: calc(-1 * var(--dawg-space-1)) calc(-1 * var(--dawg-space-2));
+    padding: var(--dawg-space-1) var(--dawg-space-2);
+    border: 0;
+    border-radius: var(--dawg-radius-sm);
+    background: transparent;
+    color: inherit;
+    font: inherit;
+    text-align: inherit;
+    white-space: nowrap;
+    cursor: pointer;
+  }
+  [data-align='end'] > .dawg-table__sort {
+    flex-direction: row-reverse;
+  }
+  @media (hover: hover) {
+    .dawg-table__sort:hover {
+      background: var(--dawg-color-surface-strong);
+      color: var(--dawg-color-text);
+    }
+  }
+  .dawg-table__sort:focus-visible {
+    outline: var(--dawg-focus-ring-width) solid var(--dawg-color-focus-ring);
+    outline-offset: 0;
+  }
+  .dawg-table__sort-icon {
+    flex: none;
+    width: 0.875rem;
+    height: 0.875rem;
+  }
+  .dawg-table__sort-icon:not([data-direction]) {
+    opacity: 0.6;
+  }
+
+  /* ---------- Selection and actions columns ---------- */
+  .dawg-table__table .dawg-table__select {
+    width: 1%;
+    padding-inline-end: 0;
+  }
+  .dawg-table__checkbox {
+    display: block;
+    width: 1.125rem;
+    height: 1.125rem;
+    margin: 0;
+    accent-color: var(--dawg-color-primary);
+    cursor: pointer;
+  }
+  .dawg-table__checkbox:disabled {
+    cursor: not-allowed;
+  }
+  .dawg-table__checkbox:focus-visible {
+    outline: var(--dawg-focus-ring-width) solid var(--dawg-color-focus-ring);
+    outline-offset: var(--dawg-focus-ring-offset);
+  }
+  @media (pointer: coarse) {
+    .dawg-table__checkbox {
+      width: 1.375rem;
+      height: 1.375rem;
+    }
+  }
+  .dawg-table__table .dawg-table__row-actions {
+    width: 1%;
+    padding-block: 0;
+    padding-inline-start: 0;
+    text-align: end;
+  }
+  @media (pointer: coarse) {
+    .dawg-table__row-actions .dawg-menu__button {
+      --_h: var(--dawg-touch-target);
+    }
+  }
+
+  .dawg-table__table .dawg-table__empty {
+    padding: var(--dawg-space-10) var(--_px);
+    color: var(--dawg-color-text-muted);
+    text-align: center;
+  }
+
+  /* ---------- Columns hidden on small screens ---------- */
+  @media (max-width: 47.99rem) {
+    .dawg-table__table [data-hide-below='md'] {
+      display: none;
+    }
+  }
+  @media (max-width: 63.99rem) {
+    .dawg-table__table [data-hide-below='lg'] {
+      display: none;
+    }
+  }
+
+  @media (forced-colors: active) {
+    .dawg-table__table tbody tr[data-selected] > * {
+      outline: 1px solid Highlight;
+      outline-offset: -1px;
+    }
+  }
+}

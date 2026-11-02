@@ -7,6 +7,7 @@ import {
   coreTokens,
   controlPairs,
   indicatorPairs,
+  selectionPairs,
   neutralTextPairs,
   tonePairs,
   type Pair,
@@ -19,6 +20,7 @@ const PAIRS: Pair[] = [
   ...TONES.flatMap(tonePairs),
   ...indicatorPairs,
   ...controlPairs,
+  ...selectionPairs,
 ];
 
 describe('design tokens', () => {

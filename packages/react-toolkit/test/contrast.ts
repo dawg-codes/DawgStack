@@ -111,3 +111,9 @@ export const controlPairs: Pair[] = [
   [c('border-input'), c('surface-muted'), 3],
   [c('text-muted'), c('surface-strong'), 3], // switch thumb on its "off" track
 ];
+
+/** Text on selected table rows (tinted with the accent): body text and muted text. */
+export const selectionPairs: Pair[] = [
+  [c('text'), c('primary-soft'), 4.5],
+  [c('text-muted'), c('primary-soft'), 4.5],
+];

@@ -7,9 +7,9 @@ import { describe, expect, it } from 'vitest';
 import { themeToCssVars } from '../src/components/theme/define-theme';
 import { accentPresets, shapePresets } from '../src/components/theme/presets';
 import { COMPONENT_TOKENS, DESIGN_TOKENS } from '../src/components/theme/tokens';
-import { contrast, coreTokens, indicatorPairs, tonePairs } from './contrast';
+import { contrast, coreTokens, indicatorPairs, selectionPairs, tonePairs } from './contrast';
 
-const PAIRS = [...tonePairs('primary'), ...indicatorPairs];
+const PAIRS = [...tonePairs('primary'), ...indicatorPairs, ...selectionPairs];
 
 describe('accent presets', () => {
   for (const [name, preset] of Object.entries(accentPresets)) {
