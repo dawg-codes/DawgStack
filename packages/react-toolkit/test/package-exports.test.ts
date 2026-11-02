@@ -1,6 +1,6 @@
 // @vitest-environment node
 // Guards against drift between component folders, the root index and package.json "exports".
-import { readFileSync } from 'node:fs';
+import { readFileSync, readdirSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
 import {
@@ -38,6 +38,17 @@ describe('package entry points', () => {
     const own = readFileSync(`${root}/LICENSE`, 'utf8');
     expect(own).toBe(readFileSync(`${root}/../../LICENSE`, 'utf8'));
     expect(own).toMatch(/^MIT License\n\nCopyright \(c\) \d{4} Dawg Codes\n/);
+  });
+
+  it('gives every template its own copy of the LICENSE, since templates are copied out', () => {
+    const rootLicense = readFileSync(`${root}/../../LICENSE`, 'utf8');
+    const templates = readdirSync(`${root}/../../templates`, { withFileTypes: true }).filter((d) =>
+      d.isDirectory(),
+    );
+    expect(templates.length).toBeGreaterThan(0);
+    for (const t of templates) {
+      expect(readFileSync(`${root}/../../templates/${t.name}/LICENSE`, 'utf8')).toBe(rootLicense);
+    }
   });
 
   it('has React as its only peer dependency and no runtime dependencies', () => {

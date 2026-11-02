@@ -17,9 +17,10 @@
     "format:check": "prettier --check .",
     "leak-guard": "node tooling/leak-guard.mjs",
     "check:package": "pnpm --filter @dawg-codes/react-toolkit check:package",
-    "check": "pnpm leak-guard && pnpm lint && pnpm format:check && pnpm typecheck && pnpm test && pnpm build && pnpm check:package && pnpm --filter playground build",
+    "check": "pnpm leak-guard && pnpm lint && pnpm format:check && pnpm typecheck && pnpm test && pnpm build && pnpm check:package && pnpm --filter playground --filter \"./templates/*\" build",
     "playground": "pnpm build && pnpm --filter playground dev",
-    "playground:build": "pnpm build && pnpm --filter playground build"
+    "playground:build": "pnpm build && pnpm --filter playground build",
+    "starter": "pnpm build && pnpm --filter dawgstack-starter dev"
   },
   "devDependencies": {
     "@eslint/js": "9.39.5",
