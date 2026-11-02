@@ -12,12 +12,12 @@ DawgStack is an open-source React toolkit by Dawg Codes: reusable UI components,
 
 ## Features
 
-- **Accessible components.** Buttons, cards, badges, avatars, loading states, form controls and more. They use semantic HTML and correct ARIA, work with the keyboard, and are tested with axe-core.
+- **Accessible components.** Buttons, cards, badges, avatars, loading states, form controls, dialogs, toasts, menus and more. They use semantic HTML and correct ARIA, work with the keyboard, and are tested with axe-core.
 - **Themes users can switch.** A ready-made toggle for light, dark or follow-the-system. The choice is saved, follows the OS live, stays in sync across tabs, and never flashes the wrong theme on load.
 - **Modular styling.** Mix and match accent presets (indigo, teal, pink, graphite) with shape presets (sharp, default, round), define your own typed theme, or give one part of a page its own theme.
 - **Boilerplate templates.** Complete apps you copy and own. Use one as it is, or change a few clearly marked files: name, navigation, theme and where the data comes from.
 - **Take only what you need.** Import all styles, just the components you use, or none and style everything yourself. Every component also has its own JavaScript entry point.
-- **Customise without forking.** 108 tokens (91 design tokens and 17 per-component hooks), all in CSS cascade layers, so your own CSS always wins without `!important`.
+- **Customise without forking.** 114 tokens (92 design tokens and 22 per-component hooks), all in CSS cascade layers, so your own CSS always wins without `!important`.
 - **Contrast you can trust.** Every colour pair in both themes and in every preset is tested against WCAG AA. Reduced motion, Windows High Contrast and right-to-left progress bars are handled.
 - **Works anywhere.** React 18 and 19, ESM and CommonJS, TypeScript types, server rendering and React Server Components. React is the only peer dependency, and there are no runtime dependencies.
 
@@ -64,6 +64,10 @@ export function App() {
 
 ![A sign-up form showing errors, and form controls in dark mode](docs/screenshots/forms.png)
 
+**Dialogs, toasts and menus**: a modal dialog with a form, and in dark mode an actions menu and toasts.
+
+![A dialog in light mode, and a dropdown menu with toasts in dark mode](docs/screenshots/overlays.png)
+
 **Loading and progress**: skeleton placeholders, determinate, indeterminate and meter-style progress bars, in dark mode.
 
 ![Skeleton and progress components in dark mode](docs/screenshots/feedback-dark.png)
@@ -88,6 +92,9 @@ The [`@dawg-codes/react-toolkit`](packages/react-toolkit) package provides:
 | ProgressBar           | Determinate, indeterminate and meter-style bars                         |
 | EmptyState            | "Nothing here yet" panels with an icon, explanation and actions         |
 | Form controls         | Text, select, checkbox, radio, switch, search, password, one-time code  |
+| Dialog, ConfirmDialog | Modal dialogs on the native `<dialog>`, and confirmations               |
+| Toasts                | Brief messages that pause on hover and focus, with optional actions     |
+| DropdownMenu          | An actions menu with full keyboard support that never gets clipped      |
 | VisuallyHidden        | Text for screen readers only                                            |
 | Theme tools           | ThemeProvider, ThemeToggle, ThemeScope, presets and typed custom themes |
 
@@ -113,7 +120,7 @@ Each template keeps the things you're most likely to change in a few obvious fil
 | Admin dashboard              | App layout with side navigation, overview and settings                                    | Planned   |
 | User management              | Searchable, sortable user table with bulk actions                                         | Planned   |
 
-The planned templates need components that are still being built: app layout, dialogs and a data table. The form controls they use are ready.
+The planned templates need components that are still being built: app layout and a data table. The form controls, dialogs, toasts and menus they use are ready.
 
 ```bash
 pnpm starter                                                   # run it inside this repository

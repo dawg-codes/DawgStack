@@ -53,3 +53,27 @@ export const MailIcon = () => (
     <path d="M3.5 6.5 12 13l8.5-6.5" />
   </svg>
 );
+export const MoreIcon = () => (
+  <svg {...base}>
+    <circle cx="5" cy="12" r="1" />
+    <circle cx="12" cy="12" r="1" />
+    <circle cx="19" cy="12" r="1" />
+  </svg>
+);
+export const EditIcon = () => (
+  <svg {...base}>
+    <path d="M4 20h4L19 9l-4-4L4 16v4ZM13.5 6.5l4 4" />
+  </svg>
+);
+export const CopyIcon = () => (
+  <svg {...base}>
+    <rect x="8" y="8" width="12" height="12" rx="2" />
+    <path d="M16 8V5a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h3" />
+  </svg>
+);
+export const ArchiveIcon = () => (
+  <svg {...base}>
+    <rect x="3" y="4" width="18" height="4" rx="1" />
+    <path d="M5 8v11a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V8M10 12h4" />
+  </svg>
+);
