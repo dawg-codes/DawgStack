@@ -120,25 +120,26 @@ Templates are boilerplate: complete, runnable apps built from the toolkit. Copy 
 | Components and theming | Installed from npm | Bug fixes and improvements arrive with `npm update` |
 | Templates              | Copied once        | Yours to change; nothing is locked in a package     |
 
-Each template keeps the things you're most likely to change in a few obvious files: `app.config.ts` (name, navigation, which sections show), `theme.ts` (colours and corners), and `src/data/` (where data comes from).
+Each template keeps the things you're most likely to change in a few obvious files: `app.config.ts` (name, navigation, which sections or screens show), `theme.ts` (colours and corners), and one file for calls to your backend (`src/data/api.ts` or `src/auth/api.ts`).
 
 ![The Starter template in light mode on a computer and dark mode on a phone](docs/screenshots/starter.png)
 
 | Template                     | What it is                                                                                | Status    |
 | ---------------------------- | ----------------------------------------------------------------------------------------- | --------- |
 | [Starter](templates/starter) | A themed dashboard: summary numbers, projects with status and progress, team and activity | Available |
-| Sign-in pages                | Sign-in, one-time code and password reset screens                                         | Planned   |
+| [Sign-in](templates/sign-in) | Sign in with an optional 2-step code, create an account, and reset a forgotten password   | Available |
 | Admin dashboard              | App layout with side navigation, overview and settings                                    | Planned   |
 | User management              | Searchable, sortable user table with bulk actions                                         | Planned   |
 
-All the components the planned templates need are now ready; the templates themselves come next.
+![The Sign-in template in light mode on a computer, and its code screen in dark mode on a phone](docs/screenshots/sign-in.png)
 
 ```bash
-pnpm starter                                                   # run it inside this repository
-npx degit dawg-codes/DawgStack/templates/starter my-app        # copy it (once the toolkit is on npm)
+pnpm starter                                                   # run a template inside this repository
+pnpm sign-in
+npx degit dawg-codes/DawgStack/templates/starter my-app        # copy one (once the toolkit is on npm)
 ```
 
-See the [Starter README](templates/starter/README.md) for the full copy steps and where to change things.
+Each template's README ([Starter](templates/starter/README.md), [Sign-in](templates/sign-in/README.md)) has the full copy steps and where to change things.
 
 ## Try it locally
 
@@ -175,6 +176,7 @@ tooling/                  repository checks
 | `pnpm leak-guard`    | Fails if a file, file name, commit message or commit author contains a blocked word. The word list is kept out of the repo: see `tooling/leak-guard.mjs` |
 | `pnpm playground`    | Runs the preview app                                                                                                                                     |
 | `pnpm starter`       | Runs the Starter template                                                                                                                                |
+| `pnpm sign-in`       | Runs the Sign-in template                                                                                                                                |
 
 ### Adding a component
 
