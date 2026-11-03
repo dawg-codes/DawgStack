@@ -1,0 +1,316 @@
+/*
+ * Page styles for this template. Colours, spacing and radii come from DawgStack tokens, so the
+ * pages follow the theme in theme.ts, the accent picker and the light/dark toggle automatically.
+ */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+body {
+  margin: 0;
+  background: var(--dawg-color-bg);
+  color: var(--dawg-color-text);
+  font-family:
+    system-ui,
+    -apple-system,
+    'Segoe UI',
+    Roboto,
+    sans-serif;
+  line-height: 1.5;
+}
+/* Only links without a class, so component links keep their own styles. */
+a:not([class]) {
+  color: var(--dawg-color-primary);
+  text-underline-offset: 0.15em;
+}
+:focus-visible {
+  outline: var(--dawg-focus-ring-width) solid var(--dawg-color-focus-ring);
+  outline-offset: var(--dawg-focus-ring-offset);
+}
+/* Headings get focus after moving between pages; the focus itself needs no ring. */
+h1:focus {
+  outline: none;
+}
+
+/* ---------- Brand and account ---------- */
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--dawg-space-2);
+  color: inherit;
+  font-size: var(--dawg-font-size-lg);
+  font-weight: var(--dawg-font-weight-semibold);
+  text-decoration: none;
+}
+.brand__mark {
+  flex: none;
+  width: 1.75rem;
+  height: 1.75rem;
+}
+.brand__mark rect {
+  fill: var(--dawg-color-primary-solid);
+}
+.brand__mark path {
+  fill: none;
+  stroke: var(--dawg-color-primary-on-solid);
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+/*
+ * Keep the header within narrow screens: a long name shortens with "…", and below 24rem only
+ * the logo shows (the name is still read out by screen readers).
+ */
+.dawg-app-header__brand {
+  flex: 0 1 auto;
+}
+.brand {
+  min-width: 0;
+}
+.brand__name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+@media (max-width: 23.99rem) {
+  .brand__name {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+  }
+}
+.account {
+  display: flex;
+  align-items: center;
+  gap: var(--dawg-space-3);
+  min-width: 0;
+  font-size: var(--dawg-font-size-sm);
+}
+
+/* ---------- Shared ---------- */
+.page-stack {
+  display: grid;
+  gap: var(--dawg-space-6);
+}
+/* A main line with a smaller muted line under it, e.g. a name and an email. */
+.two-line {
+  display: grid;
+  min-width: 0;
+}
+.two-line__sub {
+  overflow: hidden;
+  color: var(--dawg-color-text-muted);
+  font-size: var(--dawg-font-size-sm);
+  font-weight: var(--dawg-font-weight-regular);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.nowrap {
+  white-space: nowrap;
+}
+/* Shown only where tables hide their less important columns (see useIsNarrow). */
+@media (min-width: 48rem) {
+  .narrow-only {
+    display: none;
+  }
+}
+
+/* Panel: a titled card */
+.panel {
+  display: grid;
+  gap: var(--dawg-space-4);
+  min-width: 0;
+  align-content: start;
+}
+.panel__header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--dawg-space-1) var(--dawg-space-4);
+}
+.panel__title {
+  margin: 0;
+  font-size: var(--dawg-font-size-lg);
+  font-weight: var(--dawg-font-weight-semibold);
+  line-height: var(--dawg-line-height-tight);
+}
+.panel__description {
+  margin: var(--dawg-space-1) 0 0;
+  color: var(--dawg-color-text-muted);
+  font-size: var(--dawg-font-size-sm);
+}
+.panel__link {
+  color: var(--dawg-color-primary);
+  font-size: var(--dawg-font-size-sm);
+  font-weight: var(--dawg-font-weight-medium);
+  text-underline-offset: 0.15em;
+}
+.panel__status {
+  margin: 0;
+  min-height: 1.5em;
+  color: var(--dawg-color-text-muted);
+  font-size: var(--dawg-font-size-sm);
+}
+
+/* ---------- Overview ---------- */
+.stat-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 13rem), 1fr));
+  gap: var(--dawg-space-4);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.stat {
+  display: grid;
+  gap: var(--dawg-space-2);
+  align-content: start;
+}
+.stat p {
+  margin: 0;
+}
+.stat__label {
+  color: var(--dawg-color-text-muted);
+  font-size: var(--dawg-font-size-sm);
+  font-weight: var(--dawg-font-weight-medium);
+}
+.stat__value {
+  font-size: calc(var(--dawg-font-size-xl) * 1.25);
+  font-weight: var(--dawg-font-weight-bold);
+  font-variant-numeric: tabular-nums;
+  line-height: var(--dawg-line-height-tight);
+}
+/* Red when the change is bad and green when it's good, whichever way the number moved. */
+.stat__change {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0 var(--dawg-space-2);
+  font-size: var(--dawg-font-size-sm);
+}
+.stat__delta {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--dawg-space-1);
+  color: var(--dawg-color-danger);
+  font-weight: var(--dawg-font-weight-medium);
+}
+.stat__change[data-good] .stat__delta {
+  color: var(--dawg-color-success);
+}
+.stat__delta svg {
+  flex: none;
+  width: 1.1em;
+  height: 1.1em;
+}
+.stat__vs {
+  color: var(--dawg-color-text-muted);
+  white-space: nowrap;
+}
+.overview-columns {
+  display: grid;
+  gap: var(--dawg-space-6);
+  align-items: start;
+}
+@media (min-width: 70rem) {
+  .overview-columns {
+    grid-template-columns: minmax(0, 2fr) minmax(0, 3fr);
+  }
+}
+.channel-list {
+  display: grid;
+  gap: var(--dawg-space-4);
+}
+
+/* ---------- Orders ---------- */
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--dawg-space-3);
+}
+.toolbar > :first-child {
+  flex: 1 1 16rem;
+}
+.toolbar > :not(:first-child) {
+  flex: 0 1 12rem;
+}
+@media (max-width: 30rem) {
+  .toolbar > :not(:first-child) {
+    flex: 1 1 100%;
+  }
+}
+.details {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: var(--dawg-space-3) var(--dawg-space-6);
+  margin: 0;
+}
+.details dt {
+  color: var(--dawg-color-text-muted);
+}
+.details dd {
+  margin: 0;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+/* ---------- Settings ---------- */
+.settings {
+  max-width: 48rem;
+}
+.form-grid {
+  display: grid;
+  gap: var(--dawg-space-4) var(--dawg-space-6);
+}
+@media (min-width: 40rem) {
+  .form-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+  .form-grid__wide,
+  .form-grid__actions {
+    grid-column: 1 / -1;
+  }
+}
+.form-grid__actions {
+  display: flex;
+  justify-content: flex-end;
+}
+.switch-list {
+  display: grid;
+  gap: var(--dawg-space-5);
+}
+.appearance {
+  display: grid;
+  gap: var(--dawg-space-5);
+}
+.appearance__mode {
+  display: grid;
+  justify-items: start;
+  gap: var(--dawg-space-2);
+}
+.appearance__label {
+  margin: 0;
+  font-size: var(--dawg-font-size-sm);
+  font-weight: var(--dawg-font-weight-medium);
+  line-height: var(--dawg-line-height-tight);
+}
+.danger-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--dawg-space-4);
+}
+.danger-row p {
+  flex: 1 1 20rem;
+  margin: 0;
+  color: var(--dawg-color-text-muted);
+}
+.danger-row strong {
+  color: var(--dawg-color-text);
+}

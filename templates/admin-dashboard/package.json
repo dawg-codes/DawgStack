@@ -1,0 +1,26 @@
+{
+  "name": "dawgstack-admin-dashboard",
+  "version": "0.1.0",
+  "private": true,
+  "description": "DawgStack Admin dashboard template: an admin app with overview, orders and settings to use as-is or adapt.",
+  "license": "MIT",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@dawg-codes/react-toolkit": "workspace:*",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1"
+  },
+  "devDependencies": {
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "@vitejs/plugin-react": "^6.1.2",
+    "typescript": "~5.9.3",
+    "vite": "^8.3.5"
+  }
+}
