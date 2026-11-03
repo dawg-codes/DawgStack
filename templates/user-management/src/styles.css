@@ -1,0 +1,270 @@
+/*
+ * Page styles for this template. Colours, spacing and radii come from DawgStack tokens, so the
+ * pages follow the theme in theme.ts and the light/dark toggle automatically.
+ */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+body {
+  margin: 0;
+  background: var(--dawg-color-bg);
+  color: var(--dawg-color-text);
+  font-family:
+    system-ui,
+    -apple-system,
+    'Segoe UI',
+    Roboto,
+    sans-serif;
+  line-height: 1.5;
+}
+/* Only links without a class, so component links keep their own styles. */
+a:not([class]) {
+  color: var(--dawg-color-primary);
+  text-underline-offset: 0.15em;
+}
+:focus-visible {
+  outline: var(--dawg-focus-ring-width) solid var(--dawg-color-focus-ring);
+  outline-offset: var(--dawg-focus-ring-offset);
+}
+/* Headings get focus after moving between pages; the focus itself needs no ring. */
+h1:focus {
+  outline: none;
+}
+
+/* ---------- Brand and account ---------- */
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--dawg-space-2);
+  color: inherit;
+  font-size: var(--dawg-font-size-lg);
+  font-weight: var(--dawg-font-weight-semibold);
+  text-decoration: none;
+}
+.brand__mark {
+  flex: none;
+  width: 1.75rem;
+  height: 1.75rem;
+}
+.brand__mark rect {
+  fill: var(--dawg-color-primary-solid);
+}
+.brand__mark path {
+  fill: none;
+  stroke: var(--dawg-color-primary-on-solid);
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+/*
+ * Keep the header within narrow screens: a long name shortens with "…", and below 24rem only
+ * the logo shows (the name is still read out by screen readers).
+ */
+.dawg-app-header__brand {
+  flex: 0 1 auto;
+}
+.brand {
+  min-width: 0;
+}
+.brand__name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+@media (max-width: 23.99rem) {
+  .brand__name {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+  }
+}
+.account {
+  display: flex;
+  align-items: center;
+  gap: var(--dawg-space-3);
+  min-width: 0;
+  font-size: var(--dawg-font-size-sm);
+}
+
+/* ---------- Shared ---------- */
+.page-stack {
+  display: grid;
+  gap: var(--dawg-space-6);
+}
+/* A main line with a smaller muted line under it, e.g. a name and an email. */
+.two-line {
+  display: grid;
+  min-width: 0;
+}
+.two-line__sub {
+  overflow: hidden;
+  color: var(--dawg-color-text-muted);
+  font-size: var(--dawg-font-size-sm);
+  font-weight: var(--dawg-font-weight-regular);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.nowrap {
+  white-space: nowrap;
+}
+/* Shown only where tables hide their less important columns (see useIsNarrow). */
+@media (min-width: 48rem) {
+  .narrow-only {
+    display: none;
+  }
+}
+
+.section-title {
+  margin: 0;
+  font-size: var(--dawg-font-size-lg);
+  font-weight: var(--dawg-font-weight-semibold);
+  line-height: var(--dawg-line-height-tight);
+}
+.page-stack--tight {
+  gap: var(--dawg-space-3);
+}
+
+/* ---------- Users ---------- */
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--dawg-space-3);
+}
+.toolbar > :first-child {
+  flex: 1 1 16rem;
+}
+.toolbar > :not(:first-child) {
+  flex: 0 1 11rem;
+}
+@media (max-width: 30rem) {
+  .toolbar > :not(:first-child) {
+    flex: 1 1 8rem;
+  }
+}
+/* Picture, name and email in the first column. */
+.user-cell {
+  display: flex;
+  align-items: center;
+  gap: var(--dawg-space-3);
+  min-width: 0;
+}
+.user-cell .two-line {
+  max-width: 18rem;
+}
+.user-cell__name {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--dawg-space-1) var(--dawg-space-2);
+}
+@media (max-width: 47.99rem) {
+  .user-cell .dawg-avatar {
+    display: none;
+  }
+  .user-cell .two-line {
+    max-width: 11rem;
+  }
+}
+
+/* Dialogs and the details panel */
+.dialog-form {
+  display: grid;
+  gap: var(--dawg-space-4);
+}
+.panel-body {
+  display: grid;
+  justify-items: start;
+  gap: var(--dawg-space-5);
+}
+.details {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: var(--dawg-space-4) var(--dawg-space-6);
+  width: 100%;
+  margin: 0;
+}
+.details dt {
+  color: var(--dawg-color-text-muted);
+}
+.details dd {
+  margin: 0;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.details__role {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--dawg-space-3);
+}
+.details__role > span {
+  display: grid;
+}
+.details__hint {
+  color: var(--dawg-color-text-muted);
+  font-size: var(--dawg-font-size-sm);
+}
+.panel-note {
+  margin: 0;
+  padding: var(--dawg-space-3) var(--dawg-space-4);
+  border-radius: var(--dawg-radius-md);
+  background: var(--dawg-color-surface-muted);
+  color: var(--dawg-color-text-muted);
+  font-size: var(--dawg-font-size-sm);
+}
+
+/* ---------- Roles ---------- */
+.role-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 13rem), 1fr));
+  gap: var(--dawg-space-4);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.role-card {
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  gap: var(--dawg-space-2);
+}
+.role-card__title {
+  margin: 0;
+  font-size: var(--dawg-font-size-lg);
+  font-weight: var(--dawg-font-weight-semibold);
+  line-height: var(--dawg-line-height-tight);
+}
+.role-card__description {
+  margin: 0;
+  color: var(--dawg-color-text-muted);
+  font-size: var(--dawg-font-size-sm);
+}
+.role-card__count {
+  margin: var(--dawg-space-2) 0 0;
+  font-size: var(--dawg-font-size-sm);
+  font-weight: var(--dawg-font-weight-medium);
+}
+/* A tick or a dash in the permissions table. */
+.allowed {
+  display: inline-flex;
+  vertical-align: middle;
+  color: var(--dawg-color-text-subtle);
+}
+.allowed[data-allowed] {
+  color: var(--dawg-color-success);
+}
+.allowed svg {
+  width: 1.25rem;
+  height: 1.25rem;
+}
+/* Five columns on a phone: tighter cells so the table fits without sideways scrolling. */
+@media (max-width: 30rem) {
+  .permissions-table th,
+  .permissions-table td {
+    padding-inline: var(--dawg-space-2);
+  }
+}

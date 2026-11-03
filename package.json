@@ -22,7 +22,8 @@
     "playground:build": "pnpm build && pnpm --filter playground build",
     "starter": "pnpm build && pnpm --filter dawgstack-starter dev",
     "sign-in": "pnpm build && pnpm --filter dawgstack-sign-in dev",
-    "admin-dashboard": "pnpm build && pnpm --filter dawgstack-admin-dashboard dev"
+    "admin-dashboard": "pnpm build && pnpm --filter dawgstack-admin-dashboard dev",
+    "user-management": "pnpm build && pnpm --filter dawgstack-user-management dev"
   },
   "devDependencies": {
     "@eslint/js": "9.39.5",
