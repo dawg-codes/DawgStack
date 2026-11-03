@@ -1,22 +1,57 @@
 #!/usr/bin/env node
-// Leak guard: fails if a committed (or about-to-be-committed) file contains a blocked term.
+// Leak guard: fails if a file, file name, commit message or commit author contains a blocked word.
 //
 // DawgStack is public. Some words must never appear in it (names of private projects,
-// organisations or business domains). Listing those words here in plain text would itself
-// leak them, so this file stores only SHA-256 hashes of lowercase words. Every word in every
-// tracked file, and in every commit message and author name, is hashed and compared against
-// the list; matches are reported masked. Words joined in camelCase or PascalCase are also
-// checked one by one ("acmePortal" is checked as "acme" and "portal").
+// organisations or business domains). The list of those words isn't kept in this repository
+// either, not even as hashes, because the hash of a short word can be confirmed by guessing.
+// The list comes from:
+//   - the LEAK_GUARD_HASHES environment variable (a GitHub Actions secret in CI), or
+//   - a local .leak-guard-hashes file, which git ignores.
+// Each entry is the SHA-256 hex digest of one lowercase word. Entries are separated by line
+// breaks, commas or spaces; lines starting with # are ignored.
 //
-// To check a candidate word:  node -e "console.log(require('crypto').createHash('sha256').update('word').digest('hex'))"
+// Every word in every tracked file, and in every commit message and author, is hashed and
+// compared against the list; matches are reported masked. Words joined in camelCase or
+// PascalCase are also checked one by one ("acmePortal" is checked as "acme" and "portal").
+// Without a list the guard fails in CI, so protection can't silently switch off, and only
+// warns on your own machine.
+//
+// To hash a word:  node -e "console.log(require('crypto').createHash('sha256').update('word').digest('hex'))"
 // To allow a line on purpose (rare, needs review): add the text  leak-guard-allow  to that line.
 import { createHash } from 'node:crypto';
 import { execFileSync } from 'node:child_process';
-import { readFileSync, statSync } from 'node:fs';
+import { existsSync, readFileSync, statSync } from 'node:fs';
 import { extname } from 'node:path';
 
-const BLOCKED_WORD_HASHES = new Set([
-]);
+const LOCAL_LIST = '.leak-guard-hashes';
+
+function loadBlockedHashes() {
+  const fromEnv = process.env.LEAK_GUARD_HASHES ?? '';
+  const text = fromEnv.trim()
+    ? fromEnv
+    : existsSync(LOCAL_LIST)
+      ? readFileSync(LOCAL_LIST, 'utf8')
+      : '';
+  const entries = text
+    .split(/\r?\n/)
+    .filter((line) => !line.trim().startsWith('#'))
+    .join(' ')
+    .toLowerCase()
+    .match(/\b[0-9a-f]{64}\b/g);
+  return new Set(entries ?? []);
+}
+
+const BLOCKED_WORD_HASHES = loadBlockedHashes();
+if (BLOCKED_WORD_HASHES.size === 0) {
+  const help =
+    'no blocked-word list found. Set the LEAK_GUARD_HASHES environment variable (in CI, a ' +
+    `repository secret) or create a local ${LOCAL_LIST} file; see tooling/leak-guard.mjs.`;
+  if (process.env.CI) {
+    console.error(`Leak guard: ${help}`);
+    process.exit(1);
+  }
+  console.warn(`Leak guard: warning: ${help} Only the built-in patterns are checked.`);
+}
 
 // Plain patterns that reveal nothing on their own.
 const BLOCKED_PATTERNS = [{ name: 'staff-ID-like code', re: /\bEMP\d{3,}\b/ }];

@@ -17,3 +17,6 @@ coverage/
 # Local environment files (never commit secrets)
 .env
 .env.*
+
+# Leak guard word list: kept out of the public repo (CI reads it from a secret)
+.leak-guard-hashes

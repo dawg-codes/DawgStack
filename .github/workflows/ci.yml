@@ -30,3 +30,6 @@ jobs:
       - run: corepack enable
       - run: pnpm install --frozen-lockfile
       - run: pnpm check
+        env:
+          # The leak guard's blocked-word list (SHA-256 hashes), kept out of the public repo.
+          LEAK_GUARD_HASHES: ${{ secrets.LEAK_GUARD_HASHES }}
