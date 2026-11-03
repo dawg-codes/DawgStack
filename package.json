@@ -20,7 +20,8 @@
     "check": "pnpm leak-guard && pnpm lint && pnpm format:check && pnpm typecheck && pnpm test && pnpm build && pnpm check:package && pnpm --filter playground --filter \"./templates/*\" build",
     "playground": "pnpm build && pnpm --filter playground dev",
     "playground:build": "pnpm build && pnpm --filter playground build",
-    "starter": "pnpm build && pnpm --filter dawgstack-starter dev"
+    "starter": "pnpm build && pnpm --filter dawgstack-starter dev",
+    "sign-in": "pnpm build && pnpm --filter dawgstack-sign-in dev"
   },
   "devDependencies": {
     "@eslint/js": "9.39.5",
